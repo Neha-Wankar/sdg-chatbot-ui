@@ -1,0 +1,16 @@
+.dynamic-step-form .form-control:focus {
+    border-color: rgb(65 116 192);
+    box-shadow: 0 0 0 .2rem rgba(65, 116, 192, .12);
+}
+
+.step-primary {
+    background: rgb(65 116 192);
+    border-color: rgb(65 116 192);
+    color: #fff;
+}
+
+.step-primary:hover:not(:disabled) {
+    background: rgb(55 101 171);
+    border-color: rgb(55 101 171);
+    color: #fff;
+}

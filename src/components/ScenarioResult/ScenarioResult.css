@@ -1,0 +1,35 @@
+.scenario-card {
+    transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+    cursor: pointer;
+    border-color: #dfe5ed !important;
+}
+
+.scenario-card:hover:not(:disabled) {
+    border-color: rgb(65 116 192) !important;
+    box-shadow: 0 .25rem .75rem rgba(65, 116, 192, .12);
+    transform: translateY(-1px);
+}
+
+.scenario-card.selected {
+    border: 2px solid rgb(65 116 192) !important;
+    background: #f5f8fd !important;
+}
+
+.scenario-number {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    background: #e9eef7;
+    color: rgb(65 116 192);
+    font-weight: 700;
+}
+
+.selected-number {
+    background: rgb(65 116 192);
+    color: #fff;
+}
+
+.scenario-card:disabled {
+    opacity: .7;
+    cursor: default;
+}

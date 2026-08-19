@@ -1,0 +1,44 @@
+.sidebar-shell {
+    width: 255px;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+    background: rgb(47 74 114);
+}
+
+.sidebar-brand-logo {
+    width: 40px;
+    height: 40px;
+}
+
+.sidebar-item {
+    color: #ded5cc;
+}
+
+.sidebar-item:hover,
+.sidebar-item.active {
+    background: rgba(255, 255, 255, .08);
+    color: #fff;
+}
+
+.sidebar-help {
+    border-top: 1px solid rgba(255, 255, 255, .12);
+}
+
+@media (max-width: 850px) {
+    .sidebar-shell {
+        width: 70px;
+    }
+
+    .sidebar-label,
+    .sidebar-help,
+    .workspace-label {
+        display: none !important;
+    }
+}
+
+@media (max-width: 560px) {
+    .sidebar-shell {
+        display: none !important;
+    }
+}
