@@ -134,7 +134,7 @@ export default function WorkflowSteps({
           <div className="small text-secondary mb-2">
             Do you want to submit the process steps?
           </div>
-          <button type="button" className="btn btn-primary" onClick={onSubmit}>
+          <button type="button" className="btn btn-primary" onClick={onSubmit} disabled={completedStepIds.length === 0}>
             Submit <i className="bi bi-check2 ms-2" />
           </button>
         </div>
