@@ -1,4 +1,4 @@
-const donationSteps = [
+export const DEFAULT_STEPS = [
   {
     id: "cmir",
     name: "Maintain CMIR data for plant determination",
@@ -70,7 +70,7 @@ const donationSteps = [
   { id: "ar", name: "Validate AR postings and sign-off", requiresInput: false }
 ];
 
-const base = (id, name, description) => ({ id, name, description, steps: donationSteps });
+const base = (id, name, description) => ({ id, name, description, steps: DEFAULT_STEPS });
 
 export const mockScenarios = [
   base("DON-VA01", "E2Ev Order To Cash > Standard O2C > Donations -- via VA01", "Donation order processing using VA01."),

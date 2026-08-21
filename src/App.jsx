@@ -14,6 +14,7 @@ const initialMessage = {
 export default function App() {
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
   const [messages, setMessages] = useState([initialMessage]);
+  const [conversationId, setConversationId] = useState(0);
 
   const handleLogout = () => {
     logout();
@@ -21,9 +22,12 @@ export default function App() {
     setMessages([initialMessage]);
   };
 
-  const resetConversation = () => setMessages([initialMessage]);
+  const resetConversation = () => {
+    setMessages([initialMessage]);
+    setConversationId((current) => current + 1);
+  };
 
   if (!authenticated) return <LoginPage onLogin={() => setAuthenticated(true)} />;
 
-  return <div className="app-shell d-flex min-vh-100"><Sidebar onNewConversation={resetConversation} onLogout={handleLogout} /><ChatBot messages={messages} setMessages={setMessages} /></div>;
+  return <div className="app-shell d-flex min-vh-100"><Sidebar onNewConversation={resetConversation} onLogout={handleLogout} /><ChatBot messages={messages} setMessages={setMessages} conversationId={conversationId} /></div>;
 }
