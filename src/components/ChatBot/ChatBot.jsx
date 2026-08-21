@@ -126,6 +126,16 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
             inputs: values
          });
 
+         if (step.requiresInput) {
+            setWorkflow((previous) => ({
+               ...previous,
+               values: {
+                  ...(previous?.values || {}),
+                  [step.id]: values,
+               },
+            }));
+         }
+
          const completed = workflow.completed.includes(currentStep.id)
             ? workflow.completed
             : [...workflow.completed, currentStep.id];
@@ -264,6 +274,7 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
                            currentStepIndex={currentStepIndex}
                            completedStepIds={completedStepIds}
                            workflowSubmitted={workflowSubmitted}
+                           workflowValues={workflow?.values || {}}
                            onStepContinue={handleStepContinue}
                            onSubmit={handleWorkflowSubmit}
                            loading={loading}

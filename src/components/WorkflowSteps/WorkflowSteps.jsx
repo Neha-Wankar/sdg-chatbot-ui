@@ -7,6 +7,7 @@ export default function WorkflowSteps({
   currentStepIndex = 0,
   completedStepIds = [],
   workflowSubmitted = false,
+  workflowValues = {},
   onStepContinue,
   onSubmit,
 }) {
@@ -99,6 +100,7 @@ export default function WorkflowSteps({
                   </div>
                 )}
 
+                {/* Current step - editable input form */}
                 {isCurrent && step.requiresInput && (
                   <div className="workflow-inline-form">
                     <div className="small text-secondary mb-3">
@@ -107,10 +109,32 @@ export default function WorkflowSteps({
 
                     <DynamicStepForm
                       step={step}
+                      initialValues={workflowValues?.[step.id] || {}}
+                      disabled={false}
                       onSubmit={(values) =>
                         onStepContinue(step, index, values)
                       }
                     />
+                  </div>
+                )}
+
+                {/* Completed step - keep input values visible but disabled */}
+                {isCompleted && step.requiresInput && (
+                  <div className="workflow-inline-form mt-3">
+
+                    <div className="small text-success mb-3">
+                      <i className="bi bi-check-circle me-1" />
+                      Input submitted for this step
+                    </div>
+
+                    <DynamicStepForm
+                      step={step}
+                      initialValues={workflowValues?.[step.id] || {}}
+                      disabled={true}
+                      hideSubmit={true}
+                      onSubmit={() => { }}
+                    />
+
                   </div>
                 )}
               </div>
