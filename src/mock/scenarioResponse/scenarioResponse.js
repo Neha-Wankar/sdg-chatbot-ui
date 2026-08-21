@@ -1,10 +1,5 @@
 export const DEFAULT_STEPS = [
   {
-    id: "cmir",
-    name: "Maintain CMIR data for plant determination",
-    requiresInput: false
-  },
-  {
     id: "sales-order",
     name: "Create Donation sales order",
     requiresInput: true,
