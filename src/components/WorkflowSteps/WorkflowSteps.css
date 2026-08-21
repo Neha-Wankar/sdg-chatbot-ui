@@ -1,33 +1,89 @@
-.workflow-step+.workflow-step {
-    border-top: 1px solid #edf0f4;
+.workflow-container {
+    margin-top: 1rem;
 }
 
-.workflow-step.current {
-    background: #f5f8fd;
+.workflow-list {
+    display: flex;
+    flex-direction: column;
+    gap: .7rem;
 }
 
-.step-icon {
-    width: 28px;
-    height: 28px;
-    flex: 0 0 28px;
-    background: #edf1f6;
-    color: #6b7280;
-    font-size: 12px;
+.workflow-step-card {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    padding: 1rem;
+    border: 1px solid #d9e7f8;
+    border-radius: .75rem;
+    background: #fff;
+    transition: .15s ease;
+}
+
+.workflow-step-card.current {
+    border-color: rgb(65 116 192);
+    background: #f4f8ff;
+    box-shadow: 0 3px 12px rgba(65, 116, 192, .12);
+}
+
+.workflow-step-card.completed {
+    border-color: #b8dfc8;
+    background: #f5fbf7;
+}
+
+.workflow-step-card.locked {
+    opacity: .55;
+    background: #f8f9fa;
+}
+
+.workflow-step-number {
+    width: 38px;
+    min-width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgb(65 116 192);
+    color: #fff;
     font-weight: 700;
 }
 
-.step-icon.current-icon {
-    background: rgb(65 116 192);
-    color: #fff;
-}
-
-.step-icon.done {
+.workflow-step-card.completed .workflow-step-number {
     background: #198754;
-    color: #fff;
 }
 
-.input-badge {
-    background: #e9f0fb;
-    color: rgb(65 116 192);
+.workflow-step-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.workflow-step-name {
+    color: #172b4d;
     font-weight: 600;
+}
+
+.workflow-submit-area {
+    margin-top: 1.25rem;
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
+    text-align: right;
+}
+
+.workflow-inline-form {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-top: 1px solid #d9e7f8;
+    background: #fff;
+    border-radius: .5rem
+}
+
+.workflow-current-action {
+    margin-top: 1rem
+}
+
+.workflow-submit-area {
+    margin-top: 1.25rem;
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
+    text-align: right
 }
