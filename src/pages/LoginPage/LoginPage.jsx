@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { login } from "../../auth/authService/authService";
-import "./LoginPage.css";
 
 export default function LoginPage({ onLogin }) {
   const [username, setUsername] = useState("");
@@ -22,47 +21,120 @@ export default function LoginPage({ onLogin }) {
       onLogin();
     } catch (error) {
       const detail = error?.response?.data?.detail;
-      setError(Array.isArray(detail) ? detail.map((item) => item?.msg).filter(Boolean).join(" ") : detail || error?.message || "Invalid username or password.");
+      setError(
+        Array.isArray(detail)
+          ? detail.map((item) => item?.msg).filter(Boolean).join(" ")
+          : detail || error?.message || "Invalid username or password."
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <main className="login-page d-flex align-items-center justify-content-center bg-light px-3">
-      <div className="login-card card border shadow-sm p-4 p-md-5">
-        <div className="d-flex align-items-center gap-3 mb-4">
-          <div className="login-logo rounded-circle text-white d-flex align-items-center justify-content-center fw-bold fs-4">S</div>
+    <main
+      className="min-h-screen flex items-center justify-center px-4"
+      style={{ background: "radial-gradient(circle at top left, #ccdcf4 0, transparent 34%), #f7f5f1" }}
+    >
+      <div className="w-full max-w-[420px] bg-white rounded-2xl shadow-md border border-gray-200 p-8 md:p-10">
+
+        {/* Logo + brand */}
+        <div className="flex items-center gap-3 mb-6">
+          <img
+            src="/ibm-logo.png"
+            alt="IBM"
+            className="rounded-full bg-white object-contain p-1 shrink-0"
+            style={{ width: 52, height: 52 }}
+          />
           <div>
-            <strong className="d-block fs-5">SDG</strong>
-            <span className="text-secondary small">Synthetic Data Generator</span>
+            <strong className="block text-base font-semibold text-gray-900">SDG</strong>
+            <span className="text-sm text-gray-500">Synthetic Data Generator</span>
           </div>
         </div>
 
-        <div className="mb-4">
-          <h1 className="h3 mb-2">Welcome</h1>
-          <p className="text-secondary small mb-0">Sign in to continue to the Synthetic Data Generator.</p>
+        {/* Heading */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">Welcome back</h1>
+          <p className="text-sm text-gray-500">Sign in to continue to the Synthetic Data Generator.</p>
         </div>
 
-        <form onSubmit={handleSubmit} noValidate>
-          <div className="mb-3">
-            <label className="form-label small fw-semibold" htmlFor="username">Username</label>
-            <input className="form-control" id="username" type="text" autoComplete="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Enter your username" />
+        <form onSubmit={handleSubmit} noValidate className="space-y-4">
+          {/* Username */}
+          <div>
+            <label
+              htmlFor="username"
+              className="block text-sm font-semibold mb-1"
+              style={{ color: "rgb(69 97 139)" }}
+            >
+              Username
+            </label>
+            <input
+              id="username"
+              type="text"
+              autoComplete="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your username"
+              className="w-full text-sm px-3 py-2 rounded-lg border border-gray-300 outline-none transition focus:border-[rgb(65_116_192)] focus:ring-2 focus:ring-[rgb(65_116_192)]/20"
+            />
           </div>
 
-          <div className="mb-3">
-            <label className="form-label small fw-semibold" htmlFor="password">Password</label>
-            <div className="password-field">
-              <input className="form-control" id="password" type={showPassword ? "text" : "password"} autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" />
-              
-              <button type="button" className="password-toggle btn btn-link btn-sm" onClick={() => setShowPassword((v) => !v)}>{showPassword ? "Hide" : "Show"}</button>
+          {/* Password */}
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-semibold mb-1"
+              style={{ color: "rgb(69 97 139)" }}
+            >
+              Password
+            </label>
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                className="w-full text-sm px-3 py-2 pr-16 rounded-lg border border-gray-300 outline-none transition focus:border-[rgb(65_116_192)] focus:ring-2 focus:ring-[rgb(65_116_192)]/20"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium no-underline"
+                style={{ color: "rgb(65 116 192)" }}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
             </div>
           </div>
 
-          {error && <div className="alert alert-danger py-2 small" role="alert">{error}</div>}
+          {/* Error */}
+          {error && (
+            <div
+              role="alert"
+              className="text-sm px-3 py-2 rounded-lg bg-red-50 border border-red-200 text-red-700"
+            >
+              {error}
+            </div>
+          )}
 
-          <button className="btn sign-btn w-100 py-2" type="submit" disabled={isLoading}>
-            {isLoading ? (<> <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />Signing in...</>) : "Sign in"}
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full py-2.5 rounded-lg text-white text-sm font-semibold transition hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            style={{ background: "rgb(65 116 192)" }}
+          >
+            {isLoading ? (
+              <>
+                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                </svg>
+                Signing in...
+              </>
+            ) : "Sign in"}
           </button>
         </form>
       </div>

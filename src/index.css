@@ -1,13 +1,17 @@
-html,
-body,
-#root {
-  width: 100%;
-  height: 100%;
-  margin: 0;
+@import "tailwindcss";
+
+/* ── Brand tokens ─────────────────────────────────────────── */
+@theme {
+  --color-brand-500: rgb(65 116 192);
+  --color-brand-600: rgb(55 101 171);
+  --color-brand-50:  #f4f8ff;
+  --color-brand-100: #e9eef7;
+  --color-brand-dark: rgb(47 74 114);
 }
 
-body {
-  overflow: hidden;
+/* ── Base resets ──────────────────────────────────────────── */
+html, body, #root {
+  @apply w-full h-full m-0 overflow-hidden;
   font-family: Inter, "Segoe UI", Arial, sans-serif;
   background: #f7f5f1;
   color: #29231e;
