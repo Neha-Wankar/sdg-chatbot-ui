@@ -108,7 +108,7 @@ export default function DynamicStepForm({ step, initialValues = {}, onSubmit, lo
                 className={`w-full text-sm px-3 py-2 rounded-lg border outline-none transition
                   ${errors[field.name]
                     ? "border-red-400 bg-red-50 focus:ring-2 focus:ring-red-300"
-                    : "border-gray-300 focus:border-[rgb(65_116_192)] focus:ring-2 focus:ring-[rgb(65_116_192)]/20"
+                    : "border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
                   }
                   disabled:bg-gray-50 disabled:text-gray-500`}
               />

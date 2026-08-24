@@ -36,7 +36,7 @@ export default function LoginPage({ onLogin }) {
       className="min-h-screen flex items-center justify-center px-4"
       style={{ background: "radial-gradient(circle at top left, #ccdcf4 0, transparent 34%), #f7f5f1" }}
     >
-      <div className="w-full max-w-[420px] bg-white rounded-2xl shadow-md border border-gray-200 p-8 md:p-10">
+      <div className="w-full max-w-105 bg-white rounded-2xl shadow-md border border-gray-200 p-8 md:p-10">
 
         {/* Logo + brand */}
         <div className="flex items-center gap-3 mb-6">
@@ -75,7 +75,7 @@ export default function LoginPage({ onLogin }) {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Enter your username"
-              className="w-full text-sm px-3 py-2 rounded-lg border border-gray-300 outline-none transition focus:border-[rgb(65_116_192)] focus:ring-2 focus:ring-[rgb(65_116_192)]/20"
+              className="w-full text-sm px-3 py-2 rounded-lg border border-gray-300 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
             />
           </div>
 
@@ -96,7 +96,7 @@ export default function LoginPage({ onLogin }) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
-                className="w-full text-sm px-3 py-2 pr-16 rounded-lg border border-gray-300 outline-none transition focus:border-[rgb(65_116_192)] focus:ring-2 focus:ring-[rgb(65_116_192)]/20"
+                className="w-full text-sm px-3 py-2 pr-16 rounded-lg border border-gray-300 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
               />
               <button
                 type="button"

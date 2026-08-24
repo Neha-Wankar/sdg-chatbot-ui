@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import DynamicStepForm from "../DynamicStepForm/DynamicStepForm";
+import MaskingDataTable from "../MaskingDataTable/MaskingDataTable";
 
 export default function WorkflowSteps({
   steps = [],
@@ -192,6 +193,7 @@ export default function WorkflowSteps({
             </svg>
             Review and configure masking data
           </div>
+          <MaskingDataTable />
         </div>
       )}
     </div>
