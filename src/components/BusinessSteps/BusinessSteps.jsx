@@ -1,12 +1,24 @@
 export default function BusinessSteps({ steps }) {
-  return <section className="border-top p-4">
-    <div className="d-flex gap-3">
-      <span className="fw-bold text-secondary small">01</span>
-      <div className="flex-grow-1">
-        <h3 className="h6 mb-1">Business steps</h3>
-        <small className="text-secondary">Steps mapped from the knowledge base</small>
-        <ol className="list-group list-group-numbered mt-3">{steps.map((step, i) => <li className="list-group-item bg-light border rounded-3 mb-2 py-2 small" key={`${step}-${i}`}>{step}</li>)}</ol>
+  return (
+    <section className="border-t border-gray-100 px-5 py-4">
+      <div className="flex gap-4">
+        <span className="font-bold text-gray-400 text-xs mt-0.5">01</span>
+        <div className="flex-1">
+          <h3 className="text-sm font-semibold text-gray-900 mb-0.5">Business steps</h3>
+          <p className="text-xs text-gray-500 mb-3">Steps mapped from the knowledge base</p>
+          <ol className="flex flex-col gap-1.5">
+            {steps.map((step, i) => (
+              <li
+                key={`${step}-${i}`}
+                className="flex items-start gap-2.5 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700"
+              >
+                <span className="text-xs font-bold text-gray-400 mt-px shrink-0">{String(i + 1).padStart(2, "0")}</span>
+                {step}
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
-    </div>
-  </section>;
+    </section>
+  );
 }

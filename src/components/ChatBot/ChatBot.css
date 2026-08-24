@@ -1,71 +1,19 @@
 .chat-workspace {
-    min-height: 0;
-    overflow: hidden;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .chat-messages {
-    width: 100%;
-    min-height: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    overscroll-behavior: contain;
-    scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
-.chat-content {
-    max-width: 980px;
-    width: 100%;
-}
-
-.chat-composer-area {
-    flex: 0 0 auto;
-}
-
-.message-avatar {
-    width: 34px;
-    height: 34px;
-    flex: 0 0 34px;
-}
-
-.message-content {
-    max-width: 820px;
-    min-width: 0;
-}
-
-.chat-bubble {
-    font-size: 14px;
-    line-height: 1.55;
-}
-
-.suggestion-button {
-    width: calc(50% - .5rem);
-}
-
-.sdg-logo {
-    background: rgb(65 116 192) !important;
-}
-
-.min-width-0 {
-    min-width: 0;
-}
-
-.min-height-0 {
-    min-height: 0;
-}
-
-.step-primary {
-    background: rgb(65 116 192);
-    border-color: rgb(65 116 192);
-    color: #fff;
-}
-
-.step-primary:hover:not(:disabled) {
-    background: rgb(55 101 171);
-    color: #fff;
+.suggestion-chip {
+  width: calc(50% - 0.25rem);
 }
 
 @media (max-width: 850px) {
-    .suggestion-button {
-        width: 100%;
-    }
+  .suggestion-chip {
+    width: 100%;
+  }
 }
