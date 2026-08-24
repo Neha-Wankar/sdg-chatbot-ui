@@ -106,11 +106,11 @@ export default function WorkflowCard({ type, data, onContinue, loading }) {
         <p className="text-xs text-gray-500 mt-1 mb-3">Choose data source</p>
         <div className="flex flex-col gap-2 mb-4">
           <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-            <input type="radio" name={`dataSource-${data?.fileKey || "workflow"}`} defaultChecked className="accent-[rgb(65_116_192)]" />
+            <input type="radio" name={`dataSource-${data?.fileKey || "workflow"}`} defaultChecked className="accent-brand-500" />
             Pull data from datalake
           </label>
           <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-            <input type="radio" name={`dataSource-${data?.fileKey || "workflow"}`} className="accent-[rgb(65_116_192)]" />
+            <input type="radio" name={`dataSource-${data?.fileKey || "workflow"}`} className="accent-brand-500" />
             Pull data from SAP
           </label>
         </div>
