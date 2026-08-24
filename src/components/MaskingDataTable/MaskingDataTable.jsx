@@ -36,7 +36,11 @@ function SortIcon({ dir }) {
   );
 }
 
+const MIN_RECORDS = 1;
+const MAX_RECORDS = 100000;
+
 export default function MaskingDataTable({ initialRows }) {
+  const [recordCount, setRecordCount] = useState(1000);
   const [rows, setRows] = useState(initialRows ?? DEFAULT_ROWS);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState({ key: "column", dir: "asc" });
@@ -102,7 +106,57 @@ export default function MaskingDataTable({ initialRows }) {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, maskProvider: value } : r)));
   };
 
+  /* ── record count helpers ── */
+  const clamp = (v) => Math.min(MAX_RECORDS, Math.max(MIN_RECORDS, v));
+  const adjustCount = (delta) => setRecordCount((prev) => clamp(prev + delta));
+  const handleCountInput = (e) => {
+    const raw = e.target.value.replace(/[^0-9]/g, "");
+    if (raw === "") { setRecordCount(""); return; }
+    setRecordCount(clamp(Number(raw)));
+  };
+  const handleCountBlur = () => {
+    if (recordCount === "" || Number.isNaN(Number(recordCount))) setRecordCount(1000);
+  };
+
   return (
+    <>
+    {/* Number of records control */}
+    <div className="bg-white border border-gray-200 rounded-xl shadow-sm px-4 py-3 flex items-center justify-between gap-4 mb-3">
+      <div>
+        <div className="text-sm font-semibold text-gray-800">Number of records to generate</div>
+      </div>
+      <div className="flex items-center gap-1.5 shrink-0">
+        {/* Decrement */}
+        <button
+          type="button"
+          onClick={() => adjustCount(-1)}
+          disabled={recordCount <= MIN_RECORDS}
+          className="w-7 h-7 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 font-bold text-base hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition select-none"
+        >
+          −
+        </button>
+        {/* Direct input */}
+        <input
+          type="text"
+          inputMode="numeric"
+          value={recordCount}
+          onChange={handleCountInput}
+          onBlur={handleCountBlur}
+          className="w-20 text-center text-sm font-semibold text-gray-800 px-2 py-1.5 rounded-lg border border-gray-300 outline-none focus:ring-2 transition"
+          style={{ focusRingColor: "rgb(65 116 192 / 0.25)", borderColor: "rgb(65 116 192)" }}
+        />
+        {/* Increment */}
+        <button
+          type="button"
+          onClick={() => adjustCount(1)}
+          disabled={recordCount >= MAX_RECORDS}
+          className="w-7 h-7 flex items-center justify-center rounded-lg border border-gray-200 text-gray-600 font-bold text-base hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition select-none"
+        >
+          +
+        </button>
+      </div>
+    </div>
+
     <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
       {/* Toolbar */}
       <div className="px-4 py-3 border-b border-gray-100 flex flex-wrap items-center gap-2">
@@ -239,5 +293,6 @@ export default function MaskingDataTable({ initialRows }) {
         Showing {displayRows.length} of {rows.length} rows
       </div>
     </div>
+    </>
   );
 }

@@ -22,27 +22,6 @@ function ActionButton({ children, onClick, loading }) {
   );
 }
 
-function PreviewTable({ data }) {
-  if (!data?.preview?.length) return null;
-  const columns = Object.keys(data.preview[0]);
-  return (
-    <div className="overflow-x-auto border border-gray-200 rounded-xl mt-3">
-      <table className="w-full text-sm">
-        <thead className="bg-gray-50 border-b border-gray-200">
-          <tr>{columns.map((col) => <th key={col} className="px-3 py-2 text-left text-xs font-semibold text-gray-600 whitespace-nowrap">{col}</th>)}</tr>
-        </thead>
-        <tbody>
-          {data.preview.map((row, i) => (
-            <tr key={i} className="border-b border-gray-100 last:border-0">
-              {columns.map((col) => <td key={col} className="px-3 py-2 text-gray-700 text-xs whitespace-nowrap">{String(row[col])}</td>)}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
 export default function WorkflowCard({ type, data, onContinue, loading }) {
 
   if (type === "scenario") {
@@ -99,42 +78,7 @@ export default function WorkflowCard({ type, data, onContinue, loading }) {
     </div>
   );
 
-  if (type === "pull") return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
-      <div className="p-5">
-        <div className="text-xs uppercase font-bold tracking-wider text-gray-400 mb-1">02 · Input data</div>
-        <p className="text-xs text-gray-500 mt-1 mb-3">Choose data source</p>
-        <div className="flex flex-col gap-2 mb-4">
-          <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-            <input type="radio" name={`dataSource-${data?.fileKey || "workflow"}`} defaultChecked className="accent-brand-500" />
-            Pull data from datalake
-          </label>
-          <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-            <input type="radio" name={`dataSource-${data?.fileKey || "workflow"}`} className="accent-brand-500" />
-            Pull data from SAP
-          </label>
-        </div>
-        <div className="flex items-start gap-2 px-3 py-2.5 rounded-lg bg-blue-50 border border-blue-200 text-xs text-blue-700">
-          Database data will be used for testing. This is useful for development and testing without connecting to SAP.
-        </div>
-        <div className="grid grid-cols-2 gap-2 mt-3">
-          <div className="border border-gray-200 rounded-xl p-3">
-            <p className="text-xs text-gray-500">Records</p>
-            <strong className="text-sm text-gray-900">{data?.rows}</strong>
-          </div>
-          <div className="border border-gray-200 rounded-xl p-3">
-            <p className="text-xs text-gray-500">Columns</p>
-            <strong className="text-sm text-gray-900">{data?.columns?.length}</strong>
-          </div>
-        </div>
-        <PreviewTable data={data} />
-      </div>
-      <div className="border-t border-gray-100 p-4 flex flex-wrap gap-2">
-        <ActionButton onClick={() => onContinue?.("pullDatalake")} loading={loading}>Pull data from datalake</ActionButton>
-        <ActionButton onClick={() => onContinue?.("pullSap")} loading={loading}>Pull data from SAP</ActionButton>
-      </div>
-    </div>
-  );
+  if (type === "pull") return null;
 
   if (type === "identify") return (
     <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">

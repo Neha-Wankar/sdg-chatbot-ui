@@ -1,7 +1,7 @@
-const wait = (ms = 650) => new Promise((resolve) => setTimeout(resolve, ms));
+const wait = (ms = 150) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function processStep({ scenarioId, stepId, inputs }) {
-  await wait(700);
+  await wait(150);
   return {
     status: "success",
     scenarioId,

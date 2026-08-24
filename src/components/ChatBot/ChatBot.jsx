@@ -24,12 +24,14 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
   const addMessage = (message) =>
     setMessages((current) => [...current, { id: id(), ...message }]);
 
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     setWorkflow(null);
     setWorkflowSubmitted(false);
     setInput("");
     setLoading(false);
   }, [conversationId]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const sendMessage = async (value = input) => {
     const query = String(value || "").trim();
@@ -62,11 +64,11 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
   const selectScenario = (scenario) => {
     const steps = Array.isArray(scenario?.steps) ? scenario.steps : [];
     setWorkflowSubmitted(false);
-    setWorkflow({ scenario, steps, currentIndex: 0, completed: [], values: {} });
+    setWorkflow({ scenario, steps, currentIndex: 0, completed: [], skipped: [], values: {} });
     addMessage({ role: "user", text: `Selected: ${scenario.name}` });
     addMessage({
       role: "bot",
-      text: `Great. You selected ${scenario.name}. All workflow steps are shown below. Please complete them sequentially. You can submit at any point.`
+      text: `Great. You selected ${scenario.name}. All workflow steps are shown below. You can click any step to jump to it, or complete them in order. Steps marked "Input required" must be filled before submitting.`
     });
   };
 
@@ -79,20 +81,63 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
     try {
       await processStep({ scenarioId: workflow.scenario.id, stepId: currentStep.id, inputs: values });
 
-      if (step.requiresInput) {
-        setWorkflow((prev) => ({ ...prev, values: { ...(prev?.values || {}), [step.id]: values } }));
-      }
-
       const completed = workflow.completed.includes(currentStep.id)
         ? workflow.completed
         : [...workflow.completed, currentStep.id];
 
-      setWorkflow({ ...workflow, completed, currentIndex: workflow.currentIndex + 1, values: { ...workflow.values, [currentStep.id]: values } });
+      // Remove from skipped if it was previously skipped
+      const skipped = (workflow.skipped || []).filter((id) => id !== currentStep.id);
+
+      // Advance to next non-completed step
+      let nextIndex = workflow.currentIndex + 1;
+      while (nextIndex < workflow.steps.length && completed.includes(workflow.steps[nextIndex]?.id)) {
+        nextIndex++;
+      }
+
+      setWorkflow({
+        ...workflow,
+        completed,
+        skipped,
+        currentIndex: nextIndex,
+        values: { ...workflow.values, [currentStep.id]: values },
+      });
     } catch (error) {
       addMessage({
         role: "bot",
         text: error?.response?.data?.detail || error?.message || "The current step could not be completed.",
         error: true
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Jump to targetIndex.
+  // All non-input steps between current and target are auto-completed (no data needed).
+  // Input-required steps are hard-blocked in the UI so they will never appear here.
+  const handleJumpToStep = async (targetIndex) => {
+    if (!workflow || workflowSubmitted || loading) return;
+
+    const stepsToAutoComplete = workflow.steps
+      .slice(workflow.currentIndex, targetIndex)
+      .filter((s) => !workflow.completed.includes(s.id) && !s.requiresInput);
+
+    setLoading(true);
+    try {
+      let completed = [...workflow.completed];
+      for (const step of stepsToAutoComplete) {
+        await processStep({ scenarioId: workflow.scenario.id, stepId: step.id, inputs: {} });
+        if (!completed.includes(step.id)) completed = [...completed, step.id];
+      }
+      const filteredSkipped = (workflow.skipped || []).filter(
+        (id) => id !== workflow.steps[targetIndex]?.id
+      );
+      setWorkflow({ ...workflow, completed, skipped: filteredSkipped, currentIndex: targetIndex });
+    } catch (error) {
+      addMessage({
+        role: "bot",
+        text: error?.response?.data?.detail || error?.message || "Could not auto-complete intermediate steps.",
+        error: true,
       });
     } finally {
       setLoading(false);
@@ -117,6 +162,7 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
   const steps = workflow?.steps || [];
   const currentStepIndex = workflow?.currentIndex ?? 0;
   const completedStepIds = workflow?.completed || [];
+  const skippedStepIds = workflow?.skipped || [];
 
   return (
     <main className="flex-1 min-w-0 flex flex-col bg-gray-50">
@@ -165,9 +211,11 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
                   steps={steps}
                   currentStepIndex={currentStepIndex}
                   completedStepIds={completedStepIds}
+                  skippedStepIds={skippedStepIds}
                   workflowSubmitted={workflowSubmitted}
                   workflowValues={workflow?.values || {}}
                   onStepContinue={handleStepContinue}
+                  onJumpToStep={handleJumpToStep}
                   onSubmit={handleWorkflowSubmit}
                   loading={loading}
                 />

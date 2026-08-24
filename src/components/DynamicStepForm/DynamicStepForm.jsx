@@ -47,10 +47,12 @@ export default function DynamicStepForm({ step, initialValues = {}, onSubmit, lo
   const [values, setValues] = useState(() => getInitialValues(step.fields || [], initialValues));
   const [errors, setErrors] = useState({});
 
+  /* eslint-disable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
   useEffect(() => {
     setValues(getInitialValues(step.fields || [], initialValues));
     setErrors({});
-  }, [step.id]);
+  }, [step.id]); // intentionally depends only on step.id to reset on step change
+  /* eslint-enable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
 
   const minDate = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
