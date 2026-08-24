@@ -1,18 +1,54 @@
 @import "tailwindcss";
 
-/* ── Brand tokens ─────────────────────────────────────────── */
+/* ── Design tokens ────────────────────────────────────────────── */
 @theme {
-  --color-brand-500: rgb(65 116 192);
-  --color-brand-600: rgb(55 101 171);
-  --color-brand-50:  #f4f8ff;
-  --color-brand-100: #e9eef7;
-  --color-brand-dark: rgb(47 74 114);
+  /* Brand blues */
+  --color-brand-50:   #eef4ff;
+  --color-brand-100:  #dde9ff;
+  --color-brand-200:  #b3cfff;
+  --color-brand-300:  #7facf5;
+  --color-brand-400:  #4d8be8;
+  --color-brand-500:  rgb(65 116 192);
+  --color-brand-600:  rgb(52 96 165);
+  --color-brand-700:  rgb(42 76 130);
+  --color-brand-dark: rgb(30 55 100);
+
+  /* Surface */
+  --color-surface-0:  #ffffff;
+  --color-surface-1:  #f8fafc;
+  --color-surface-2:  #f1f5f9;
+
+  /* Radius */
+  --radius-card: 1rem;
+  --radius-pill: 9999px;
 }
 
-/* ── Base resets ──────────────────────────────────────────── */
+/* ── Scrollbar ────────────────────────────────────────────────── */
+:root {
+  --scrollbar-thumb: #d1d5db;
+  --scrollbar-track: transparent;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+*::-webkit-scrollbar        { width: 5px; height: 5px; }
+*::-webkit-scrollbar-track  { background: transparent; }
+*::-webkit-scrollbar-thumb  { background: var(--scrollbar-thumb); border-radius: 999px; }
+*::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+/* ── Base ─────────────────────────────────────────────────────── */
 html, body, #root {
   @apply w-full h-full m-0 overflow-hidden;
   font-family: Inter, "Segoe UI", Arial, sans-serif;
-  background: #f7f5f1;
-  color: #29231e;
+  background: #f0f4f9;
+  color: #1e293b;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Focus ring ───────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid rgb(65 116 192 / 0.6);
+  outline-offset: 2px;
 }

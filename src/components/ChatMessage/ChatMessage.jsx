@@ -5,13 +5,10 @@ export default function ChatMessage({ message, onSelectScenario, onBusinessInput
   const isUser = message.role === "user";
 
   return (
-    <div className={`flex gap-2 my-3 items-start ${isUser ? "justify-end" : ""}`}>
+    <div className={`flex gap-3 my-4 items-start ${isUser ? "justify-end" : ""}`}>
       {/* Bot avatar */}
       {!isUser && (
-        <div
-          className="w-9 h-9 shrink-0 rounded-xl flex items-center justify-center text-white text-xs font-bold"
-          style={{ background: "rgb(65 116 192)" }}
-        >
+        <div className="w-9 h-9 shrink-0 rounded-xl bg-brand-500 flex items-center justify-center text-white text-[11px] font-bold shadow-sm shadow-brand-500/25 mt-0.5">
           AI
         </div>
       )}
@@ -20,12 +17,11 @@ export default function ChatMessage({ message, onSelectScenario, onBusinessInput
         <div
           className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${
             isUser
-              ? "text-white ml-auto max-w-fit"
+              ? "text-white ml-auto max-w-fit bg-brand-500 shadow-md shadow-brand-500/20"
               : message.error
-              ? "bg-red-50 border border-red-200 text-red-700"
-              : "bg-white border border-gray-200 text-gray-800 shadow-sm"
+              ? "bg-red-50 border border-red-200 text-red-700 shadow-sm"
+              : "bg-white border border-gray-200/80 text-gray-800 shadow-sm"
           }`}
-          style={isUser ? { background: "rgb(65 116 192)" } : {}}
         >
           {message.text}
         </div>
@@ -51,10 +47,7 @@ export default function ChatMessage({ message, onSelectScenario, onBusinessInput
 
       {/* User avatar */}
       {isUser && (
-        <div
-          className="w-9 h-9 shrink-0 rounded-xl flex items-center justify-center text-white text-xs font-bold"
-          style={{ background: "rgb(65 116 192)" }}
-        >
+        <div className="w-9 h-9 shrink-0 rounded-xl bg-brand-600 flex items-center justify-center text-white text-[11px] font-bold shadow-sm shadow-brand-600/20 mt-0.5">
           You
         </div>
       )}

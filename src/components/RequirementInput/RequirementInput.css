@@ -2,3 +2,18 @@
   max-width: 880px;
   width: 100%;
 }
+
+.composer-textarea {
+  transition: height 0.1s ease;
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+
+.composer-textarea::-webkit-scrollbar {
+  width: 4px;
+}
+
+.composer-textarea::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 999px;
+}
