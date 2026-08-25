@@ -178,33 +178,49 @@ export default function WorkflowSteps({
           </div>
           <div className="text-sm font-semibold text-gray-900">Choose data source</div>
         </div>
-        <div className="grid grid-cols-2 gap-2">
-          {[
+        {(() => {
+          const DATA_SOURCE_OPTIONS = [
             { value: "sap", label: "Pull from SAP", icon: "🗄️" },
             { value: "datalake", label: "Pull from Datalake", icon: "☁️" },
-          ].map((opt) => (
-            <label
-              key={opt.value}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer transition-all ${
-                dataSource === opt.value
-                  ? "border-brand-400 bg-brand-50 shadow-sm"
-                  : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
-              }`}
-            >
-              <input
-                type="radio"
-                name="dataSource"
-                value={opt.value}
-                checked={dataSource === opt.value}
-                onChange={() => setDataSource(opt.value)}
-                className="w-4 h-4 accent-brand-500"
-              />
-              <span className={`text-sm font-medium ${dataSource === opt.value ? "text-brand-700" : "text-gray-700"}`}>
-                {opt.label}
-              </span>
-            </label>
-          ))}
-        </div>
+          ];
+          const selected = DATA_SOURCE_OPTIONS.find((o) => o.value === dataSource);
+          return (
+            <>
+              <div className="grid grid-cols-2 gap-2">
+                {DATA_SOURCE_OPTIONS.map((opt) => (
+                  <label
+                    key={opt.value}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer transition-all ${
+                      dataSource === opt.value
+                        ? "border-brand-400 bg-brand-50 shadow-sm"
+                        : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="dataSource"
+                      value={opt.value}
+                      checked={dataSource === opt.value}
+                      onChange={() => setDataSource(opt.value)}
+                      className="w-4 h-4 accent-brand-500"
+                    />
+                    <span className={`text-sm font-medium ${dataSource === opt.value ? "text-brand-700" : "text-gray-700"}`}>
+                      {opt.label}
+                    </span>
+                  </label>
+                ))}
+              </div>
+              {selected && (
+                <div className="mt-3 flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-700 text-xs font-medium">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-brand-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Selected: <span className="font-semibold">{selected.label}</span></span>
+                </div>
+              )}
+            </>
+          );
+        })()}
       </div>
 
       {/* Header */}

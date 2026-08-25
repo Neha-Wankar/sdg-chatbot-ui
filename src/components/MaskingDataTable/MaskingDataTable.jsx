@@ -59,6 +59,8 @@ export default function MaskingDataTable({ initialRows }) {
   const [hiddenCols, setHiddenCols] = useState(new Set());
   const [colPanelOpen, setColPanelOpen] = useState(false);
   const colPanelRef = useRef(null);
+  const [isDirty, setIsDirty] = useState(true);
+  const [maskingGenerated, setMaskingGenerated] = useState(false);
 
   const toggleSort = (key) => {
     setSort((prev) => {
@@ -109,16 +111,23 @@ export default function MaskingDataTable({ initialRows }) {
     URL.revokeObjectURL(url);
   };
 
+  const markDirty = () => {
+    setIsDirty(true);
+    setMaskingGenerated(false);
+  };
+
   const updateMaskProvider = (id, value) => {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, maskProvider: value } : r)));
+    markDirty();
   };
 
   const clamp = (v) => Math.min(MAX_RECORDS, Math.max(MIN_RECORDS, v));
-  const adjustCount = (delta) => setRecordCount((prev) => clamp(prev + delta));
+  const adjustCount = (delta) => { setRecordCount((prev) => clamp(prev + delta)); markDirty(); };
   const handleCountInput = (e) => {
     const raw = e.target.value.replace(/[^0-9]/g, "");
-    if (raw === "") { setRecordCount(""); return; }
+    if (raw === "") { setRecordCount(""); markDirty(); return; }
     setRecordCount(clamp(Number(raw)));
+    markDirty();
   };
   const handleCountBlur = () => {
     if (recordCount === "" || Number.isNaN(Number(recordCount))) setRecordCount(1000);
@@ -130,7 +139,6 @@ export default function MaskingDataTable({ initialRows }) {
       <div className="bg-white border border-gray-200 rounded-2xl shadow-sm px-5 py-4 flex items-center justify-between gap-4 mb-3">
         <div>
           <div className="text-sm font-semibold text-gray-900">Number of records to generate</div>
-          <div className="text-xs text-gray-400 mt-0.5">Between {MIN_RECORDS.toLocaleString()} and {MAX_RECORDS.toLocaleString()}</div>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
           <button
@@ -300,6 +308,29 @@ export default function MaskingDataTable({ initialRows }) {
             </button>
           )}
         </div>
+      </div>
+
+      {/* Generate masking configuration */}
+      <div className="mt-3 flex flex-col items-end gap-2">
+        {maskingGenerated && (
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm font-medium w-full">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            Synthetic data generated successfully!
+          </div>
+        )}
+        <button
+          type="button"
+          disabled={!isDirty}
+          onClick={() => { setMaskingGenerated(true); setIsDirty(false); }}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-sm font-semibold shadow-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+          Generate synthetic data
+        </button>
       </div>
     </>
   );
