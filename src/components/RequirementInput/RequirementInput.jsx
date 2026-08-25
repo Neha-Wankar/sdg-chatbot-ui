@@ -40,7 +40,7 @@ export default function RequirementInput({ value, disabled, onChange, onSubmit }
       <button
         className="w-10 h-10 shrink-0 rounded-xl flex items-center justify-center text-white transition-all bg-brand-500 hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 shadow-sm shadow-brand-500/30 self-end mb-0"
         disabled={!value.trim() || disabled}
-        onClick={onSubmit}
+        onClick={() => onSubmit()}
         aria-label="Send"
       >
         {disabled ? (
