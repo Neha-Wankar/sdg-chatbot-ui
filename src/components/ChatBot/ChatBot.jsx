@@ -34,7 +34,8 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const sendMessage = async (value = input) => {
-    const query = String(value || "").trim();
+    const rawValue = typeof value === "string" ? value : input;
+    const query = String(rawValue || "").trim();
     if (!query || loading || workflow) return;
 
     addMessage({ role: "user", text: query });
