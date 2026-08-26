@@ -25,27 +25,27 @@ export const DEFAULT_STEPS = [
   {
     id: "otr",
     name: "Validate sales order in OTR",
-    requiresInput: true,
+    requiresInput: false,
     fields: [
       { name: "salesOrg", label: "Sales Organization", type: "text", required: true, defaultValue: "US50" },
       { name: "channel", label: "Distribution Channel", type: "text", required: true, defaultValue: "01" },
       { name: "division", label: "Division", type: "text", required: true, defaultValue: "00" },
       { name: "orderType", label: "Order Type", type: "text", required: true, defaultValue: "ZDON" },
-      { name: "orderNumber", label: "Order Number", type: "text", required: true },
-      { name: "orderDate", label: "Order Creation Date or Requested Delivery Date", type: "date", required: true }
+      { name: "orderNumber", label: "Order Number", type: "text", required: false, defaultValue: "1001" },
+      { name: "orderDate", label: "Order Creation Date or Requested Delivery Date", type: "date", required: false, defaultValue: "2026-08-27" }
     ]
   },
   {
     id: "resolution-cockpit",
     name: "Review exceptions in Resolution Cockpit",
-    requiresInput: true,
+    requiresInput: false,
     fields: [
       { name: "salesOrg", label: "Sales Organization", type: "text", required: true, defaultValue: "US50" },
       { name: "channel", label: "Distribution Channel", type: "text", required: true, defaultValue: "01" },
       { name: "division", label: "Division", type: "text", required: true, defaultValue: "00" },
       { name: "orderType", label: "Order Type", type: "text", required: true, defaultValue: "OR" },
-      { name: "orderNumber", label: "Order Number", type: "text", required: true },
-      { name: "orderDate", label: "Order Creation Date or Requested Delivery Date", type: "date", required: true }
+      { name: "orderNumber", label: "Order Number", type: "text", required: false, defaultValue: "2001" },
+      { name: "orderDate", label: "Order Creation Date or Requested Delivery Date", type: "date", required: false, defaultValue: "2026-08-27" }
     ]
   },
   { id: "transportation", name: "Validate outputs and transportation details", requiresInput: false },

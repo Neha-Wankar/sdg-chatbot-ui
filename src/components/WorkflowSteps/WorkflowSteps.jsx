@@ -110,20 +110,12 @@ export default function WorkflowSteps({
   onJumpToStep,
   onSubmit,
   loading = false,
+  chatScrollRef,
 }) {
   const completed = new Set(completedStepIds);
   const skipped = new Set(skippedStepIds);
   const activeStepRef = useRef(null);
-  const dataSourceRef = useRef(null);
   const [blockedSteps, setBlockedSteps] = useState([]);
-  const [dataSource, setDataSource] = useState("sap");
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      dataSourceRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100);
-    return () => clearTimeout(timer);
-  }, []);
 
   useEffect(() => {
     if (workflowSubmitted) return;
@@ -132,6 +124,15 @@ export default function WorkflowSteps({
     }, 50);
     return () => clearTimeout(timer);
   }, [currentStepIndex, workflowSubmitted]);
+
+  useEffect(() => {
+    if (!workflowSubmitted) return;
+    const timer = setTimeout(() => {
+      const el = chatScrollRef?.current;
+      if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [workflowSubmitted]);
 
   const handleStepClick = (clickedIndex) => {
     if (workflowSubmitted || loading) return;
@@ -167,61 +168,6 @@ export default function WorkflowSteps({
       {blockedSteps.length > 0 && (
         <BlockedModal blockedSteps={blockedSteps} onClose={handleBlockedClose} />
       )}
-
-      {/* Choose data source */}
-      <div ref={dataSourceRef} className="bg-white border border-gray-200 rounded-2xl shadow-sm px-5 py-4">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-7 h-7 rounded-lg bg-brand-50 flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7M4 7c0-2 1-3 3-3h10c2 0 3 1 3 3M4 7h16" />
-            </svg>
-          </div>
-          <div className="text-sm font-semibold text-gray-900">Choose data source</div>
-        </div>
-        {(() => {
-          const DATA_SOURCE_OPTIONS = [
-            { value: "sap", label: "Pull from SAP", icon: "🗄️" },
-            { value: "datalake", label: "Pull from Datalake", icon: "☁️" },
-          ];
-          const selected = DATA_SOURCE_OPTIONS.find((o) => o.value === dataSource);
-          return (
-            <>
-              <div className="grid grid-cols-2 gap-2">
-                {DATA_SOURCE_OPTIONS.map((opt) => (
-                  <label
-                    key={opt.value}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer transition-all ${
-                      dataSource === opt.value
-                        ? "border-brand-400 bg-brand-50 shadow-sm"
-                        : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="dataSource"
-                      value={opt.value}
-                      checked={dataSource === opt.value}
-                      onChange={() => setDataSource(opt.value)}
-                      className="w-4 h-4 accent-brand-500"
-                    />
-                    <span className={`text-sm font-medium ${dataSource === opt.value ? "text-brand-700" : "text-gray-700"}`}>
-                      {opt.label}
-                    </span>
-                  </label>
-                ))}
-              </div>
-              {selected && (
-                <div className="mt-3 flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-700 text-xs font-medium">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-brand-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>Selected: <span className="font-semibold">{selected.label}</span></span>
-                </div>
-              )}
-            </>
-          );
-        })()}
-      </div>
 
       {/* Header */}
       <div className="flex items-center justify-between gap-3 px-1">
@@ -356,8 +302,8 @@ export default function WorkflowSteps({
                   </div>
                 )}
 
-                {/* Completed with input — read-only summary */}
-                {isCompleted && step.requiresInput && (
+                {/* Completed with fields — read-only summary */}
+                {isCompleted && step.fields?.length > 0 && (
                   <div className="mt-3 pt-3 border-t border-emerald-200/60">
                     <p className="flex items-center gap-1.5 text-xs text-emerald-600 mb-3 font-medium">
                       <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

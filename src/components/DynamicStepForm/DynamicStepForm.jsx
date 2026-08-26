@@ -86,11 +86,15 @@ export default function DynamicStepForm({ step, initialValues = {}, onSubmit, lo
             </svg>
           </div>
           <div>
-            <div className="text-[10px] font-bold uppercase tracking-widest text-brand-600">Input required</div>
+            {step.id === "sales-order" && (
+              <div className="text-[10px] font-bold uppercase tracking-widest text-brand-600">Input required</div>
+            )}
             <div className="font-semibold text-sm text-gray-900 leading-tight">{step.name}</div>
           </div>
         </div>
-        <div className="text-xs text-gray-500 mt-1.5">Please provide the following information to continue.</div>
+        {step.id === "sales-order" && (
+          <div className="text-xs text-gray-500 mt-1.5">Please provide the following information to continue.</div>
+        )}
       </div>
 
       {/* Fields */}
@@ -102,8 +106,8 @@ export default function DynamicStepForm({ step, initialValues = {}, onSubmit, lo
                 className="block text-xs font-semibold mb-1.5 text-brand-700"
                 htmlFor={`step-${step.id}-${field.name}`}
               >
-                {field.label}{" "}
-                {field.required && <span className="text-red-500">*</span>}
+                {field.label}
+                {step.id === "sales-order" && field.required && <span className="text-red-500"> *</span>}
               </label>
               <input
                 id={`step-${step.id}-${field.name}`}
@@ -132,8 +136,8 @@ export default function DynamicStepForm({ step, initialValues = {}, onSubmit, lo
         </div>
       </div>
 
-      {/* Footer */}
-      {!hideSubmit && (
+      {/* Footer — only for sales-order step */}
+      {step.id === "sales-order" && !hideSubmit && (
         <div className="px-4 py-3 border-t border-gray-100 bg-gray-50/60 flex justify-end">
           <button
             type="submit"

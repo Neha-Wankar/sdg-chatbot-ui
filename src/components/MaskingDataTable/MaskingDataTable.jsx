@@ -48,7 +48,7 @@ function SortIcon({ dir }) {
   );
 }
 
-const MIN_RECORDS = 1;
+const MIN_RECORDS = 1000;
 const MAX_RECORDS = 100000;
 
 export default function MaskingDataTable({ initialRows }) {
@@ -125,12 +125,13 @@ export default function MaskingDataTable({ initialRows }) {
   const adjustCount = (delta) => { setRecordCount((prev) => clamp(prev + delta)); markDirty(); };
   const handleCountInput = (e) => {
     const raw = e.target.value.replace(/[^0-9]/g, "");
-    if (raw === "") { setRecordCount(""); markDirty(); return; }
-    setRecordCount(clamp(Number(raw)));
+    setRecordCount(raw === "" ? "" : Number(raw));
     markDirty();
   };
   const handleCountBlur = () => {
-    if (recordCount === "" || Number.isNaN(Number(recordCount))) setRecordCount(1000);
+    const n = Number(recordCount);
+    if (recordCount === "" || Number.isNaN(n) || n < MIN_RECORDS) setRecordCount(MIN_RECORDS);
+    else if (n > MAX_RECORDS) setRecordCount(MAX_RECORDS);
   };
 
   return (
