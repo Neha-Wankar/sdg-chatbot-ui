@@ -25,7 +25,8 @@ export const DEFAULT_STEPS = [
   {
     id: "otr",
     name: "Validate sales order in OTR",
-    requiresInput: false,
+    requiresInput: true,
+    fieldsReadOnly: true,
     fields: [
       { name: "salesOrg", label: "Sales Organization", type: "text", required: true, defaultValue: "US50" },
       { name: "channel", label: "Distribution Channel", type: "text", required: true, defaultValue: "01" },
@@ -38,7 +39,8 @@ export const DEFAULT_STEPS = [
   {
     id: "resolution-cockpit",
     name: "Review exceptions in Resolution Cockpit",
-    requiresInput: false,
+    requiresInput: true,
+    fieldsReadOnly: true,
     fields: [
       { name: "salesOrg", label: "Sales Organization", type: "text", required: true, defaultValue: "US50" },
       { name: "channel", label: "Distribution Channel", type: "text", required: true, defaultValue: "01" },

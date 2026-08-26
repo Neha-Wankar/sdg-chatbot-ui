@@ -159,7 +159,7 @@ export default function WorkflowSteps({
   const handleBlockedClose = () => setBlockedSteps([]);
 
   const pendingInputCount = steps.filter(
-    (s) => s.requiresInput && !completed.has(s.id)
+    (s) => s.requiresInput && !s.fieldsReadOnly && !completed.has(s.id)
   ).length;
 
   return (
@@ -323,7 +323,7 @@ export default function WorkflowSteps({
 
               {/* Right-side badges */}
               <div className="shrink-0 flex flex-col items-end gap-1.5 mt-0.5">
-                {step.requiresInput && !isCompleted && (
+                {step.requiresInput && !step.fieldsReadOnly && !isCompleted && (
                   <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-brand-50 border border-brand-200 text-brand-600 whitespace-nowrap">
                     Input required
                   </span>

@@ -72,30 +72,30 @@ export default function DynamicStepForm({ step, initialValues = {}, onSubmit, lo
     return <ReadOnlySummary step={step} values={values} />;
   }
 
+  const isFieldsReadOnly = !!step.fieldsReadOnly;
+
   return (
     <form
       className="bg-white border border-gray-200 rounded-2xl shadow-sm mt-3 overflow-hidden"
       onSubmit={submit}
     >
-      {/* Form header */}
-      <div className="px-4 py-3 border-b border-gray-100 bg-gray-50/80">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-brand-100 flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
-          </div>
-          <div>
-            {step.id === "sales-order" && (
+      {/* Form header — hidden for read-only-fields steps */}
+      {!isFieldsReadOnly && (
+        <div className="px-4 py-3 border-b border-gray-100 bg-gray-50/80">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-lg bg-brand-100 flex items-center justify-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+            </div>
+            <div>
               <div className="text-[10px] font-bold uppercase tracking-widest text-brand-600">Input required</div>
-            )}
-            <div className="font-semibold text-sm text-gray-900 leading-tight">{step.name}</div>
+              <div className="font-semibold text-sm text-gray-900 leading-tight">{step.name}</div>
+            </div>
           </div>
-        </div>
-        {step.id === "sales-order" && (
           <div className="text-xs text-gray-500 mt-1.5">Please provide the following information to continue.</div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Fields */}
       <div className="p-4">
@@ -107,37 +107,45 @@ export default function DynamicStepForm({ step, initialValues = {}, onSubmit, lo
                 htmlFor={`step-${step.id}-${field.name}`}
               >
                 {field.label}
-                {step.id === "sales-order" && field.required && <span className="text-red-500"> *</span>}
+                {!isFieldsReadOnly && field.required && <span className="text-red-500"> *</span>}
               </label>
-              <input
-                id={`step-${step.id}-${field.name}`}
-                type={field.type || "text"}
-                value={values[field.name]}
-                min={field.type === "date" && field.futureOnly ? minDate : undefined}
-                onChange={(e) => update(field.name, e.target.value)}
-                disabled={loading || disabled}
-                className={`w-full text-sm px-3 py-2.5 rounded-xl border outline-none transition
-                  ${errors[field.name]
-                    ? "border-red-400 bg-red-50 focus:ring-2 focus:ring-red-300"
-                    : "border-gray-200 bg-gray-50 focus:bg-white focus:border-brand-400 focus:ring-2 focus:ring-brand-500/15"
-                  }
-                  disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed`}
-              />
-              {errors[field.name] && (
-                <p className="text-xs text-red-600 mt-1.5 flex items-center gap-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                  {errors[field.name]}
-                </p>
+              {isFieldsReadOnly ? (
+                <div className="w-full text-sm px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 min-h-[38px] flex items-center">
+                  {values[field.name] || <span className="text-gray-400 italic">—</span>}
+                </div>
+              ) : (
+                <>
+                  <input
+                    id={`step-${step.id}-${field.name}`}
+                    type={field.type || "text"}
+                    value={values[field.name]}
+                    min={field.type === "date" && field.futureOnly ? minDate : undefined}
+                    onChange={(e) => update(field.name, e.target.value)}
+                    disabled={loading || disabled}
+                    className={`w-full text-sm px-3 py-2.5 rounded-xl border outline-none transition
+                      ${errors[field.name]
+                        ? "border-red-400 bg-red-50 focus:ring-2 focus:ring-red-300"
+                        : "border-gray-200 bg-gray-50 focus:bg-white focus:border-brand-400 focus:ring-2 focus:ring-brand-500/15"
+                      }
+                      disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed`}
+                  />
+                  {errors[field.name] && (
+                    <p className="text-xs text-red-600 mt-1.5 flex items-center gap-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                      {errors[field.name]}
+                    </p>
+                  )}
+                </>
               )}
             </div>
           ))}
         </div>
       </div>
 
-      {/* Footer — only for sales-order step */}
-      {step.id === "sales-order" && !hideSubmit && (
+      {/* Footer */}
+      {!hideSubmit && (
         <div className="px-4 py-3 border-t border-gray-100 bg-gray-50/60 flex justify-end">
           <button
             type="submit"
