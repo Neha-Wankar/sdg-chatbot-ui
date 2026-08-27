@@ -1,12 +1,12 @@
-const wait = (ms = 150) => new Promise((resolve) => setTimeout(resolve, ms));
+import { mockProcessStep } from "../../mock/workflowResponse/workflowResponse";
+
+const USE_MOCK_API = String(import.meta.env.VITE_USE_MOCK_API ?? "true").toLowerCase() === "true";
 
 export async function processStep({ scenarioId, stepId, inputs }) {
-  await wait(150);
-  return {
-    status: "success",
-    scenarioId,
-    stepId,
-    inputs,
-    message: "Step completed successfully."
-  };
+  if (USE_MOCK_API) {
+    return mockProcessStep({ scenarioId, stepId, inputs });
+  }
+
+  // TODO: replace with real API call
+  throw new Error("Real workflow API not yet implemented.");
 }

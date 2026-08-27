@@ -1,16 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import { CHAT_SUGGESTIONS } from "../../mock/chatSuggestions/chatSuggestions";
 import { searchScenarios } from "../../services/scenarioMappingService/scenarioMappingService";
 import { processStep } from "../../services/workflowService/workflowService";
 import ChatMessage from "../ChatMessage/ChatMessage";
 import RequirementInput from "../RequirementInput/RequirementInput";
 import WorkflowConfiguration from "../WorkflowConfiguration/WorkflowConfiguration";
 import "./ChatBot.css";
-
-const suggestions = [
-  "Generate synthetic data for donation order processing",
-  "Generate 1000 records of synthetic data for order to cash",
-  "Create synthetic data for standard sales order processing"
-];
 
 const id = () => `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
@@ -26,7 +21,6 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [phase, setPhase] = useState("idle");
-  const [pendingQuery, setPendingQuery] = useState(null);
   const [workflow, setWorkflow] = useState(null);
   const [workflowSubmitted, setWorkflowSubmitted] = useState(false);
   const [sapSelection, setSapSelection] = useState({ source: null, sourceLandscape: null, target: null, targetLandscape: null });
@@ -36,7 +30,6 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
   const addMessage = (message) =>
     setMessages((current) => [...current, { id: id(), ...message }]);
 
-  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     setPhase("idle");
     setWorkflow(null);
@@ -44,9 +37,7 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
     setSapSelection({ source: null, sourceLandscape: null, target: null, targetLandscape: null });
     setInput("");
     setLoading(false);
-    setPendingQuery(null);
   }, [conversationId]);
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   // Scroll to the latest response during normal conversation.
   // After workflow submission, WorkflowConfiguration owns the scroll and
@@ -73,7 +64,6 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
 
     addMessage({ role: "user", text: query });
     setInput("");
-    setPendingQuery(query);
     setPhase("searching");
     setLoading(true);
 
@@ -246,7 +236,7 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
       {/* Chat area */}
       <section className="chat-workspace flex-1 flex flex-col min-h-0">
         <div ref={chatScrollRef} className="chat-messages flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
-          <div className="max-w-[1000px] w-full mx-auto px-4 md:px-8 py-5 md:py-7">
+          <div className="max-w-250 w-full mx-auto px-4 md:px-8 py-5 md:py-7">
 
             {messages.map((message, index) => {
               const isLatest = index === messages.length - 1;
@@ -297,7 +287,7 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
               <div className="ml-12 mt-5">
                 <p className="text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wide">Try asking</p>
                 <div className="flex flex-wrap gap-2">
-                  {suggestions.map((suggestion) => (
+                  {CHAT_SUGGESTIONS.map((suggestion) => (
                     <button
                       key={suggestion}
                       onClick={() => sendMessage(suggestion)}

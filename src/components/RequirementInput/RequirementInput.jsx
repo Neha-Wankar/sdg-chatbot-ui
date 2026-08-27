@@ -7,10 +7,24 @@ const MAX_HEIGHT = 200;  // px — ~5 lines before scroll kicks in
 export default function RequirementInput({ value, disabled, onChange, onSubmit }) {
   const textareaRef = useRef(null);
 
-  // Auto-resize: collapse to 0 first so scrollHeight reflects true content height
+  // Auto-resize: collapse to 0 first so scrollHeight reflects true content height.
+  // When value is empty (after submit) snap height back instantly without transition.
   useEffect(() => {
     const el = textareaRef.current;
     if (!el) return;
+
+    if (!value) {
+      // Snap back instantly — suppress the CSS height transition
+      el.style.transition = "none";
+      el.style.height = `${MIN_HEIGHT}px`;
+      el.style.overflowY = "hidden";
+      // Re-enable transition on the next frame so future typing still animates
+      requestAnimationFrame(() => {
+        el.style.transition = "";
+      });
+      return;
+    }
+
     el.style.height = "0px";
     const next = Math.min(Math.max(el.scrollHeight, MIN_HEIGHT), MAX_HEIGHT);
     el.style.height = `${next}px`;
