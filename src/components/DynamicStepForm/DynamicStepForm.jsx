@@ -40,7 +40,18 @@ function ReadOnlySummary({ step, values }) {
   );
 }
 
-export default function DynamicStepForm({ step, initialValues = {}, onSubmit, loading, disabled, hideSubmit, readOnly }) {
+export default function DynamicStepForm({
+  step,
+  initialValues = {},
+  onSubmit,
+  onValuesChange,
+  loading,
+  disabled,
+  hideSubmit,
+  readOnly,
+  submitted = false,
+  highlightRequired = false,
+}) {
   const [values, setValues] = useState(() => getInitialValues(step.fields || [], initialValues));
   const [errors, setErrors] = useState({});
 
@@ -53,7 +64,13 @@ export default function DynamicStepForm({ step, initialValues = {}, onSubmit, lo
 
   const minDate = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
-  const update = (name, value) => setValues((current) => ({ ...current, [name]: value }));
+  const update = (name, value) => {
+    setValues((current) => {
+      const next = { ...current, [name]: value };
+      onValuesChange?.(next);
+      return next;
+    });
+  };
 
   const submit = (event) => {
     event.preventDefault();
@@ -107,7 +124,11 @@ export default function DynamicStepForm({ step, initialValues = {}, onSubmit, lo
                 htmlFor={`step-${step.id}-${field.name}`}
               >
                 {field.label}
-                {!isFieldsReadOnly && field.required && <span className="text-red-500"> *</span>}
+                {!isFieldsReadOnly && field.required && (
+                  <>
+                    <span className="text-red-500"> *</span>
+                  </>
+                )}
               </label>
               {isFieldsReadOnly ? (
                 <div className="w-full text-sm px-3 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-gray-700 min-h-[38px] flex items-center">
@@ -125,6 +146,8 @@ export default function DynamicStepForm({ step, initialValues = {}, onSubmit, lo
                     className={`w-full text-sm px-3 py-2.5 rounded-xl border outline-none transition
                       ${errors[field.name]
                         ? "border-red-400 bg-red-50 focus:ring-2 focus:ring-red-300"
+                        : highlightRequired && field.required && !String(values[field.name] || "").trim()
+                        ? "border-red-400 bg-red-50/60 focus:ring-2 focus:ring-red-300"
                         : "border-gray-200 bg-gray-50 focus:bg-white focus:border-brand-400 focus:ring-2 focus:ring-brand-500/15"
                       }
                       disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed`}

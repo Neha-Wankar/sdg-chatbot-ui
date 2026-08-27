@@ -1,13 +1,9 @@
 import ScenarioResult from "../ScenarioResult/ScenarioResult";
-import DynamicStepForm from "../DynamicStepForm/DynamicStepForm";
-import SapSystemSelector from "../SapSystemSelector/SapSystemSelector";
 import StepCutoffSelector from "../StepCutoffSelector/StepCutoffSelector";
 
 export default function ChatMessage({
   message,
   onSelectScenario,
-  onBusinessInputSubmit,
-  onSapSystemConfirm,
   onStepCutoffConfirm,
   actionLoading,
 }) {
@@ -35,12 +31,7 @@ export default function ChatMessage({
           {message.text}
         </div>
 
-        {message.type === "sap-system-selector" && (
-          <SapSystemSelector
-            onConfirm={onSapSystemConfirm}
-            disabled={actionLoading || message.confirmed}
-          />
-        )}
+
 
         {message.type === "scenario-results" && (
           <ScenarioResult
@@ -56,16 +47,7 @@ export default function ChatMessage({
             scenario={message.data?.scenario}
             onConfirm={onStepCutoffConfirm}
             disabled={actionLoading || message.confirmed}
-          />
-        )}
-
-        {message.type === "business-input-form" && message.data?.step && (
-          <DynamicStepForm
-            step={message.data.step}
-            initialValues={message.data.values}
-            onSubmit={onBusinessInputSubmit}
-            loading={actionLoading}
-            showStepName={false}
+            confirmed={message.confirmed}
           />
         )}
       </div>

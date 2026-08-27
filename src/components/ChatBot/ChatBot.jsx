@@ -3,7 +3,7 @@ import { searchScenarios } from "../../services/scenarioMappingService/scenarioM
 import { processStep } from "../../services/workflowService/workflowService";
 import ChatMessage from "../ChatMessage/ChatMessage";
 import RequirementInput from "../RequirementInput/RequirementInput";
-import WorkflowSteps from "../WorkflowSteps/WorkflowSteps";
+import WorkflowConfiguration from "../WorkflowConfiguration/WorkflowConfiguration";
 import "./ChatBot.css";
 
 const suggestions = [
@@ -29,6 +29,7 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
   const [pendingQuery, setPendingQuery] = useState(null);
   const [workflow, setWorkflow] = useState(null);
   const [workflowSubmitted, setWorkflowSubmitted] = useState(false);
+  const [sapSelection, setSapSelection] = useState({ source: null, sourceLandscape: null, target: null, targetLandscape: null });
   const latestResponseRef = useRef(null);
   const chatScrollRef = useRef(null);
 
@@ -40,21 +41,29 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
     setPhase("idle");
     setWorkflow(null);
     setWorkflowSubmitted(false);
+    setSapSelection({ source: null, sourceLandscape: null, target: null, targetLandscape: null });
     setInput("");
     setLoading(false);
     setPendingQuery(null);
   }, [conversationId]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
-  // Scroll to the latest message
+  // Scroll to the latest response during normal conversation.
+  // After workflow submission, WorkflowConfiguration owns the scroll and
+  // moves the viewport to the "Workflow submitted successfully" panel.
   useEffect(() => {
+    if (workflowSubmitted) return;
+
     if (latestResponseRef.current) {
       const timer = setTimeout(() => {
-        latestResponseRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        latestResponseRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
       }, 80);
       return () => clearTimeout(timer);
     }
-  }, [messages]);
+  }, [messages, workflowSubmitted]);
 
   // ── Phase 1: User submits their requirement ────────────────────────────────
   const sendMessage = async (value = input) => {
@@ -65,31 +74,12 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
     addMessage({ role: "user", text: query });
     setInput("");
     setPendingQuery(query);
-    setPhase("sap-select");
-
-    addMessage({
-      role: "bot",
-      text: "To get started, please select the SAP source system (to collect sample data) and the target system (to create test data).",
-      type: "sap-system-selector",
-    });
-  };
-
-  // ── Phase 2: User confirms SAP source + target ─────────────────────────────
-  const handleSapSystemConfirm = async ({ source, sourceLandscape, target, targetLandscape }) => {
-    if (phase !== "sap-select" || loading) return;
-
-    // Mark the selector as confirmed so it becomes read-only
-    setMessages((current) =>
-      current.map((m) => (m.type === "sap-system-selector" && !m.confirmed ? { ...m, confirmed: true } : m))
-    );
-
-    addMessage({ role: "user", text: `Source: ${sourceLandscape} > ${source} → Target: ${targetLandscape} > ${target}` });
-    setLoading(true);
     setPhase("searching");
+    setLoading(true);
 
     try {
       addMessage({ role: "bot", text: "I'll search for the closest approved business scenarios for your requirement." });
-      const response = await searchScenarios(pendingQuery);
+      const response = await searchScenarios(query);
       setPhase("scenario-select");
       addMessage({
         role: "bot",
@@ -125,117 +115,114 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
 
   // ── Phase 4: User picks the cutoff step ───────────────────────────────────
   const handleStepCutoffConfirm = ({ upToIndex, upToStep }) => {
-    if (phase !== "cutoff-select") return;
+    if (phase !== "cutoff-select" || loading) return;
 
-    // Mark selector confirmed
     setMessages((current) =>
-      current.map((m) => (m.type === "step-cutoff-selector" && !m.confirmed ? { ...m, confirmed: true } : m))
+      current.map((m) =>
+        m.type === "step-cutoff-selector" && !m.confirmed
+          ? { ...m, confirmed: true }
+          : m
+      )
     );
 
-    // Retrieve the scenario from the step-cutoff-selector message
     const cutoffMsg = messages.find((m) => m.type === "step-cutoff-selector");
     const scenario = cutoffMsg?.data?.scenario;
     if (!scenario) return;
 
     const allSteps = Array.isArray(scenario.steps) ? scenario.steps : [];
-    const slicedSteps = allSteps.slice(0, upToIndex + 1);
+    const selectedSteps = allSteps.slice(0, upToIndex + 1);
 
-    setPhase("workflow");
+    setSapSelection({ source: null, sourceLandscape: null, target: null, targetLandscape: null });
     setWorkflowSubmitted(false);
-    setWorkflow({ scenario, steps: slicedSteps, currentIndex: 0, completed: [], skipped: [], values: {} });
+    setWorkflow({
+      scenario,
+      steps: selectedSteps,
+      currentIndex: selectedSteps.findIndex((step) => step.requiresInput),
+      completed: [],
+      skipped: [],
+      values: {},
+      selectedUpToIndex: upToIndex,
+      selectedUpToStep: upToStep,
+    });
+    setPhase("workflow");
 
-    addMessage({ role: "user", text: `Run test up to Step ${upToIndex + 1}: ${upToStep.name}` });
+    addMessage({
+      role: "user",
+      text: `Run test up to Step ${upToIndex + 1}: ${upToStep.name}`,
+    });
+
     addMessage({
       role: "bot",
-      text: `All ${slicedSteps.length} step${slicedSteps.length !== 1 ? "s" : ""} loaded (up to "${upToStep.name}"). Work through them in order or click any step to jump to it. Steps marked "Input Required" must be filled before submitting.`,
+      text: `All ${selectedSteps.length} step${selectedSteps.length !== 1 ? "s" : ""} are included up to "${upToStep.name}". Please provide the required input and select the SAP systems. Submit the workflow when ready.`,
     });
   };
 
-  // ── Workflow step handling (unchanged logic) ───────────────────────────────
-  const completeStep = async (step, values = {}) => {
+  // ── Workflow configuration handling ───────────────────────────────────────
+  const handleInputChange = (stepId, values) => {
+    setWorkflow((current) => {
+      if (!current) return current;
+      return {
+        ...current,
+        values: { ...(current.values || {}), [stepId]: values },
+      };
+    });
+  };
+
+  const handleWorkflowSubmit = async () => {
     if (!workflow || workflowSubmitted || loading) return;
-    const currentStep = workflow.steps[workflow.currentIndex];
-    if (!currentStep || currentStep.id !== step.id) return;
+
+    const requiredSteps = workflow.steps.filter((step) => step.requiresInput && !step.fieldsReadOnly);
+    const missing = [];
+
+    requiredSteps.forEach((step) => {
+      const values = workflow.values?.[step.id] || {};
+      (step.fields || []).forEach((field) => {
+        if (field.required && !String(values[field.name] || "").trim()) {
+          missing.push(`${field.label}`);
+        }
+      });
+    });
+
+    const hasSapSelection = sapSelection.source && sapSelection.sourceLandscape && sapSelection.target && sapSelection.targetLandscape;
+
+    if (missing.length || !hasSapSelection) {
+      return;
+    }
 
     setLoading(true);
     try {
-      await processStep({ scenarioId: workflow.scenario.id, stepId: currentStep.id, inputs: values });
-
-      const completed = workflow.completed.includes(currentStep.id)
-        ? workflow.completed
-        : [...workflow.completed, currentStep.id];
-
-      const skipped = (workflow.skipped || []).filter((sid) => sid !== currentStep.id);
-
-      let nextIndex = workflow.currentIndex + 1;
-      while (nextIndex < workflow.steps.length && completed.includes(workflow.steps[nextIndex]?.id)) {
-        nextIndex++;
+      for (const step of workflow.steps) {
+        await processStep({
+          scenarioId: workflow.scenario.id,
+          stepId: step.id,
+          inputs: workflow.values?.[step.id] || {},
+        });
       }
 
-      setWorkflow({ ...workflow, completed, skipped, currentIndex: nextIndex, values: { ...workflow.values, [currentStep.id]: values } });
+      setWorkflowSubmitted(true);
+      setMessages((prev) => [
+        ...prev,
+        { id: id(), role: "assistant", text: "Your selected workflow steps have been submitted." },
+      ]);
     } catch (error) {
-      addMessage({
-        role: "bot",
-        text: error?.response?.data?.detail || error?.message || "The current step could not be completed.",
-        error: true,
-      });
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: id(),
+          role: "assistant",
+          text: error?.response?.data?.detail || error?.message || "The workflow could not be submitted.",
+          error: true,
+        },
+      ]);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleJumpToStep = async (targetIndex) => {
-    if (!workflow || workflowSubmitted || loading) return;
-
-    const stepsToAutoComplete = workflow.steps
-      .slice(workflow.currentIndex, targetIndex)
-      .filter((s) => !workflow.completed.includes(s.id) && !s.requiresInput);
-
-    setLoading(true);
-    try {
-      let completed = [...workflow.completed];
-      for (const step of stepsToAutoComplete) {
-        await processStep({ scenarioId: workflow.scenario.id, stepId: step.id, inputs: {} });
-        if (!completed.includes(step.id)) completed = [...completed, step.id];
-      }
-      const filteredSkipped = (workflow.skipped || []).filter((sid) => sid !== workflow.steps[targetIndex]?.id);
-      setWorkflow({ ...workflow, completed, skipped: filteredSkipped, currentIndex: targetIndex });
-    } catch (error) {
-      addMessage({
-        role: "bot",
-        text: error?.response?.data?.detail || error?.message || "Could not auto-complete intermediate steps.",
-        error: true,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleStepContinue = (step, _index, values = {}) => completeStep(step, values);
-
-  const handleBusinessInputSubmit = (values) => {
-    if (!workflow || workflowSubmitted) return;
-    const currentStep = workflow.steps[workflow.currentIndex];
-    if (!currentStep?.requiresInput) return;
-    completeStep(currentStep, values);
-  };
-
-  const handleWorkflowSubmit = () => {
-    if (workflowSubmitted) return;
-    setWorkflowSubmitted(true);
-    setMessages((prev) => [
-      ...prev,
-      { id: id(), role: "assistant", text: "Your selected workflow steps have been submitted." },
-    ]);
   };
 
   const steps = workflow?.steps || [];
-  const currentStepIndex = workflow?.currentIndex ?? 0;
-  const completedStepIds = workflow?.completed || [];
-  const skippedStepIds = workflow?.skipped || [];
 
-  // Input is disabled when loading, or when workflow is active, or waiting for SAP/cutoff selection
-  const inputDisabled = loading || Boolean(workflow) || phase === "sap-select" || phase === "cutoff-select" || phase === "searching" || phase === "scenario-select";
+  // Business requirement input is disabled while a workflow configuration is open.
+  const inputDisabled = loading || Boolean(workflow) || phase === "cutoff-select" || phase === "searching" || phase === "scenario-select";
 
   return (
     <main className="flex-1 min-w-0 flex flex-col bg-[#f0f4f9]">
@@ -268,8 +255,6 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
                   <ChatMessage
                     message={message}
                     onSelectScenario={selectScenario}
-                    onBusinessInputSubmit={handleBusinessInputSubmit}
-                    onSapSystemConfirm={handleSapSystemConfirm}
                     onStepCutoffConfirm={handleStepCutoffConfirm}
                     actionLoading={loading || workflowSubmitted}
                   />
@@ -279,18 +264,15 @@ export default function ChatBot({ messages, setMessages, conversationId }) {
 
             {workflow && steps.length > 0 && (
               <div className="ml-12 mt-3">
-                <WorkflowSteps
+                <WorkflowConfiguration
                   steps={steps}
-                  currentStepIndex={currentStepIndex}
-                  completedStepIds={completedStepIds}
-                  skippedStepIds={skippedStepIds}
-                  workflowSubmitted={workflowSubmitted}
-                  workflowValues={workflow?.values || {}}
-                  onStepContinue={handleStepContinue}
-                  onJumpToStep={handleJumpToStep}
+                  workflowValues={workflow.values || {}}
+                  sapSelection={sapSelection}
+                  onSapSelectionChange={setSapSelection}
+                  onInputChange={handleInputChange}
                   onSubmit={handleWorkflowSubmit}
                   loading={loading}
-                  chatScrollRef={chatScrollRef}
+                  submitted={workflowSubmitted}
                 />
               </div>
             )}
