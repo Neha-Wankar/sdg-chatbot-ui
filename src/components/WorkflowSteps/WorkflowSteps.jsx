@@ -355,7 +355,7 @@ export default function WorkflowSteps({
             <button
               type="button"
               onClick={onSubmit}
-              disabled={completedStepIds.length === 0 || loading}
+              disabled={completedStepIds.length < steps.length || loading}
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm text-white font-semibold transition-all bg-brand-500 hover:bg-brand-600 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-brand-500/20"
             >
               Submit workflow

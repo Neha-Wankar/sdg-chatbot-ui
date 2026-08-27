@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function StepCutoffSelector({ scenario, onConfirm, disabled }) {
+export default function StepCutoffSelector({ scenario, onConfirm, disabled, confirmed = false }) {
   const steps = scenario?.steps || [];
   const [selectedIndex, setSelectedIndex] = useState(null);
 
@@ -21,7 +21,7 @@ export default function StepCutoffSelector({ scenario, onConfirm, disabled }) {
             Identified Scenario: <span className="text-brand-600">{scenario?.name}</span>
           </span>
         </div>
-        <p className="text-xs text-gray-500 ml-8">Select up to which step you want to perform the test.</p>
+        <p className="text-xs text-gray-500 ml-8">{confirmed ? "Selected test range is shown below." : "Select up to which step you want to perform the test."}</p>
       </div>
 
       {/* Steps list */}
@@ -52,7 +52,7 @@ export default function StepCutoffSelector({ scenario, onConfirm, disabled }) {
                   isSelected
                     ? "bg-brand-500 text-white shadow-sm"
                     : isBeforeSelected
-                    ? "bg-brand-400 text-white"
+                    ? "bg-brand-500 text-white"
                     : isBeyondSelected
                     ? "bg-gray-200 text-gray-400"
                     : "bg-gray-100 text-gray-500"
@@ -106,17 +106,26 @@ export default function StepCutoffSelector({ scenario, onConfirm, disabled }) {
             <span className="text-gray-400">No step selected yet.</span>
           )}
         </div>
-        <button
-          type="button"
-          disabled={!canConfirm || disabled}
-          onClick={() => onConfirm({ upToIndex: selectedIndex, upToStep: selectedStep })}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-brand-500 hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.97] shadow-sm shadow-brand-500/25 transition-all"
-        >
-          Start Test
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+        {!confirmed ? (
+          <button
+            type="button"
+            disabled={!canConfirm || disabled}
+            onClick={() => onConfirm({ upToIndex: selectedIndex, upToStep: selectedStep })}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-brand-500 hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.97] shadow-sm shadow-brand-500/25 transition-all"
+          >
+            Start Test
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        ) : (
+          <span className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-brand-700 bg-brand-50 border border-brand-200">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            Test range selected
+          </span>
+        )}
       </div>
     </div>
   );

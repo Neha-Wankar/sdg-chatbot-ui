@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // ─── Data ──────────────────────────────────────────────────────────────────────
 const LANDSCAPES = [
@@ -14,7 +14,7 @@ function LandscapeTable({ landscapes, selectedLandscape, selectedSystem, onSelec
 
   const activeBg     = isTarget ? "bg-green-50"   : "bg-blue-50";
   const activeText   = isTarget ? "text-green-700" : "text-blue-700";
-  const activeBorder = isTarget ? "bg-green-600"   : "bg-blue-600";
+  const activeBorder = isTarget ? "bg-green-600"   : "bg-brand-500";
 
   return (
     <div className="flex border border-gray-200 rounded-b-xl overflow-hidden">
@@ -98,13 +98,17 @@ function LandscapeTable({ landscapes, selectedLandscape, selectedSystem, onSelec
 }
 
 // ─── Main Component ────────────────────────────────────────────────────────────
-export default function SapSystemSelector({ onConfirm, disabled }) {
-  const [sourceLandscape, setSourceLandscape] = useState(null);
-  const [sourceSystem, setSourceSystem] = useState(null);
-  const [targetLandscape, setTargetLandscape] = useState(null);
-  const [targetSystem, setTargetSystem] = useState(null);
+export default function SapSystemSelector({ onConfirm, onChange, value, disabled, hideConfirmButton = false }) {
+  const [sourceLandscape, setSourceLandscape] = useState(value?.sourceLandscape || null);
+  const [sourceSystem, setSourceSystem] = useState(value?.source || null);
+  const [targetLandscape, setTargetLandscape] = useState(value?.targetLandscape || null);
+  const [targetSystem, setTargetSystem] = useState(value?.target || null);
 
   const canConfirm = sourceLandscape && sourceSystem && targetLandscape && targetSystem;
+
+  useEffect(() => {
+    onChange?.({ sourceLandscape, source: sourceSystem, targetLandscape, target: targetSystem });
+  }, [sourceLandscape, sourceSystem, targetLandscape, targetSystem, onChange]);
 
   return (
     <div className="mt-3 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
@@ -133,7 +137,7 @@ export default function SapSystemSelector({ onConfirm, disabled }) {
 
         {/* SOURCE panel */}
         <div className="rounded-xl overflow-hidden border border-blue-200 shadow-sm">
-          <div className="px-4 py-2.5 bg-blue-600 flex items-center gap-2">
+          <div className="px-4 py-2.5 bg-brand-500 flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-200 shrink-0" />
             <span className="text-[11px] font-extrabold uppercase tracking-[0.13em] text-white/90 leading-none">
               Source Landscape
@@ -171,7 +175,7 @@ export default function SapSystemSelector({ onConfirm, disabled }) {
 
         {/* TARGET panel */}
         <div className="rounded-xl overflow-hidden border border-green-200 shadow-sm">
-          <div className="px-4 py-2.5 bg-green-600 flex items-center gap-2">
+          <div className="px-4 py-2.5 bg-emerald-600 flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-green-200 shrink-0" />
             <span className="text-[11px] font-extrabold uppercase tracking-[0.13em] text-white/90 leading-none">
               Target Landscape
@@ -221,25 +225,26 @@ export default function SapSystemSelector({ onConfirm, disabled }) {
           )}
         </div>
 
-        {/* Confirm button */}
-        <button
-          type="button"
-          disabled={!canConfirm || disabled}
-          onClick={() =>
-            onConfirm({
-              source: sourceSystem,
-              sourceLandscape,
-              target: targetSystem,
-              targetLandscape,
-            })
-          }
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold tracking-wide text-white bg-brand-500 hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.97] shadow-sm shadow-brand-500/25 transition-all shrink-0"
-        >
-          Confirm &amp; Search Scenarios
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+        {!hideConfirmButton && (
+          <button
+            type="button"
+            disabled={!canConfirm || disabled}
+            onClick={() =>
+              onConfirm?.({
+                source: sourceSystem,
+                sourceLandscape,
+                target: targetSystem,
+                targetLandscape,
+              })
+            }
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold tracking-wide text-white bg-brand-500 hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.97] shadow-sm shadow-brand-500/25 transition-all shrink-0"
+          >
+            Confirm &amp; Search Scenarios
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        )}
 
       </div>
     </div>
