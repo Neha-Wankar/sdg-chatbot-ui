@@ -166,6 +166,7 @@ function DataTable({ columns, dataRows, title, badge }) {
           </button>
 
           {/* Columns toggle */}
+          {columns.length > 2 && (
           <div className="relative" ref={colPanelRef}>
             <button
               type="button"
@@ -202,6 +203,7 @@ function DataTable({ columns, dataRows, title, badge }) {
               </div>
             )}
           </div>
+          )}
         </div>
       </div>
 
@@ -429,6 +431,7 @@ export default function MaskingDataTable({ initialRows }) {
             </button>
 
             {/* Columns toggle */}
+            {MASKING_COLUMNS.length > 2 && (
             <div className="relative" ref={colPanelRef}>
               <button
                 type="button"
@@ -465,6 +468,7 @@ export default function MaskingDataTable({ initialRows }) {
                 </div>
               )}
             </div>
+            )}
           </div>
         </div>
 

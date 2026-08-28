@@ -3,22 +3,21 @@
 export const MASK_PROVIDERS = ["SAP_CODE", "CITY", "HASH", "FIRST_NAME", "LAST_NAME", "EMAIL", "PHONE", "DATE", "none"];
 
 export const DEFAULT_MASKING_ROWS = [
-  { id: 1,  column: "to_Item[0].StorageLocation",      maskProvider: "SAP_CODE", source: "sap_code_rule" },
-  { id: 2,  column: "IncotermsLocation1",               maskProvider: "CITY",     source: "name_rule"     },
-  { id: 3,  column: "to_Item[0].RequestedQuantityUnit", maskProvider: "SAP_CODE", source: "sap_code_rule" },
-  { id: 4,  column: "OrganizationDivision",             maskProvider: "SAP_CODE", source: "sap_code_rule" },
-  { id: 5,  column: "to_Item[0].Material",              maskProvider: "HASH",     source: "none"          },
-  { id: 6,  column: "DistributionChannel",              maskProvider: "SAP_CODE", source: "sap_code_rule" },
-  { id: 7,  column: "SalesOrganization",                maskProvider: "SAP_CODE", source: "sap_code_rule" },
-  { id: 8,  column: "to_Item[0].RequestedQuantity",     maskProvider: "SAP_CODE", source: "sap_code_rule" },
-  { id: 9,  column: "SoldToParty",                      maskProvider: "SAP_CODE", source: "dpt"           },
-  { id: 10, column: "to_Item[0].ProductionPlant",       maskProvider: "SAP_CODE", source: "sap_code_rule" },
+  { id: 1,  column: "to_Item[0].StorageLocation",      maskProvider: "SAP_CODE" },
+  { id: 2,  column: "IncotermsLocation1",               maskProvider: "CITY"     },
+  { id: 3,  column: "to_Item[0].RequestedQuantityUnit", maskProvider: "SAP_CODE" },
+  { id: 4,  column: "OrganizationDivision",             maskProvider: "SAP_CODE" },
+  { id: 5,  column: "to_Item[0].Material",              maskProvider: "HASH"     },
+  { id: 6,  column: "DistributionChannel",              maskProvider: "SAP_CODE" },
+  { id: 7,  column: "SalesOrganization",                maskProvider: "SAP_CODE" },
+  { id: 8,  column: "to_Item[0].RequestedQuantity",     maskProvider: "SAP_CODE" },
+  { id: 9,  column: "SoldToParty",                      maskProvider: "SAP_CODE" },
+  { id: 10, column: "to_Item[0].ProductionPlant",       maskProvider: "SAP_CODE" },
 ];
 
 export const MASKING_COLUMNS = [
   { key: "column",       label: "Column",           sortable: true },
   { key: "maskProvider", label: "Masking provider", sortable: true },
-  { key: "source",       label: "Source",           sortable: true },
 ];
 
 export const PROVIDER_COLORS = {
