@@ -25,6 +25,9 @@ export default function Sidebar({
   onLoadConversation,
   onDeleteConversation,
 }) {
+  const username = sessionStorage.getItem("sdg_username") || "User";
+  const userInitial = username.trim().charAt(0).toUpperCase() || "U";
+
   return (
     <aside className="flex flex-col shrink-0 h-dvh overflow-hidden sidebar-responsive bg-brand-dark">
       {/* Brand header */}
@@ -134,18 +137,31 @@ export default function Sidebar({
           </p>
         </div>
 
-        {/* Sign out */}
-        <button
-          onClick={onLogout}
-          className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl border border-white/15 text-sm text-white/70 text-left transition-all hover:bg-white/8 hover:text-white hover:border-white/25 active:scale-[0.98] group"
-        >
-          <span className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-white/50 group-hover:text-white/80 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
-            </svg>
-          </span>
-          <span className="sidebar-label text-sm font-medium">Sign out</span>
-        </button>
+        {/* Profile / Sign out */}
+        <div className="border-t border-white/10 pt-3 mt-1">
+          <div className="flex items-center gap-2.5 w-full px-2 py-1.5 rounded-xl transition-colors hover:bg-white/5 group">
+            <div className="w-9 h-9 rounded-full bg-white/15 ring-1 ring-white/15 flex items-center justify-center shrink-0">
+              <span className="text-xs font-bold text-white">{userInitial}</span>
+            </div>
+
+            <div className="sidebar-label flex-1 min-w-0">
+              <div className="text-sm font-semibold text-white truncate">{username}</div>
+              <div className="text-[10px] text-white/40 leading-tight">Signed in</div>
+            </div>
+
+            <button
+              type="button"
+              onClick={onLogout}
+              className="w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-white/45 hover:text-white hover:bg-white/10 transition-all active:scale-95"
+              title="Sign out"
+              aria-label="Sign out"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1" />
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
     </aside>
   );
