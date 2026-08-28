@@ -11,37 +11,54 @@ const id = () => `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
 // Conversation phases:
 //   "idle"           — waiting for first user message
-//   "sap-select"     — waiting for user to select source/target SAP systems
 //   "searching"      — searching scenarios
 //   "scenario-select"— waiting for user to select a scenario
 //   "cutoff-select"  — waiting for user to select how far to run the test
 //   "workflow"       — running the step workflow
 
-export default function ChatBot({ messages, setMessages, conversationId }) {
+export default function ChatBot({
+  messages,
+  setMessages,
+  conversationId,
+  // Phase & workflow state are owned by App so they survive conversation switches.
+  phase,
+  setPhase,
+  workflow,
+  setWorkflow,
+  workflowSubmitted,
+  setWorkflowSubmitted,
+  sapSelection,
+  setSapSelection,
+}) {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [phase, setPhase] = useState("idle");
-  const [workflow, setWorkflow] = useState(null);
-  const [workflowSubmitted, setWorkflowSubmitted] = useState(false);
-  const [sapSelection, setSapSelection] = useState({ source: null, sourceLandscape: null, target: null, targetLandscape: null });
   const latestResponseRef = useRef(null);
   const chatScrollRef = useRef(null);
+
+  // Keep track of the previous conversationId so we can distinguish a
+  // brand-new conversation (reset needed) from loading an existing one
+  // (state already restored by App — do NOT reset).
+  const prevConvIdRef = useRef(conversationId);
 
   const addMessage = (message) =>
     setMessages((current) => [...current, { id: id(), ...message }]);
 
   useEffect(() => {
-    setPhase("idle");
-    setWorkflow(null);
-    setWorkflowSubmitted(false);
-    setSapSelection({ source: null, sourceLandscape: null, target: null, targetLandscape: null });
+    const isNewConversation = prevConvIdRef.current !== conversationId;
+    prevConvIdRef.current = conversationId;
+
+    if (!isNewConversation) return;
+
+    // Only reset local UI state (input + loading).
+    // Phase, workflow, etc. are already set correctly by App before this
+    // effect fires — either to blank (new conv) or to the saved snapshot
+    // (loaded conv).
     setInput("");
     setLoading(false);
   }, [conversationId]);
 
   // Scroll to the latest response during normal conversation.
-  // After workflow submission, WorkflowConfiguration owns the scroll and
-  // moves the viewport to the "Workflow submitted successfully" panel.
+  // After workflow submission, WorkflowConfiguration owns the scroll.
   useEffect(() => {
     if (workflowSubmitted) return;
 

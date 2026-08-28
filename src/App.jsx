@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import ChatBot from "./components/ChatBot/ChatBot";
 import Sidebar from "./components/Sidebar/Sidebar";
 import LoginPage from "./pages/LoginPage/LoginPage";
@@ -11,43 +11,60 @@ const initialMessage = {
   text: "Hello! I'm the Synthetic Data Generator. Describe your business requirement and I'll find the closest business scenarios. After you select a scenario, we'll work through its process steps and I'll ask for information only when a step requires it."
 };
 
+const emptySap = { source: null, sourceLandscape: null, target: null, targetLandscape: null };
 const newConvId = () => `conv-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
 export default function App() {
   const [authenticated, setAuthenticated] = useState(isAuthenticated());
-  const [messages, setMessages] = useState([initialMessage]);
+
+  // ── Conversation identity ─────────────────────────────────────────────────
   const [conversationId, setConversationId] = useState(newConvId);
+  const [messages, setMessages] = useState([initialMessage]);
+
+  // ── ChatBot phase & workflow state — lifted here so they can be persisted
+  // and restored when the user clicks a past conversation in the sidebar. ────
+  const [phase, setPhase] = useState("idle");
+  const [workflow, setWorkflow] = useState(null);
+  const [workflowSubmitted, setWorkflowSubmitted] = useState(false);
+  const [sapSelection, setSapSelection] = useState(emptySap);
+
   const { history, saveConversation, deleteConversation } = useConversationHistory();
 
-  // Track whether the current conversation was loaded from history (to avoid
-  // re-saving the very first welcome-only state as a new entry).
-  const loadedFromHistory = useRef(false);
+  // ── Persistence: auto-save on every state change ─────────────────────────
+  useEffect(() => {
+    saveConversation(conversationId, messages, {
+      phase,
+      workflow,
+      workflowSubmitted,
+      sapSelection,
+    });
+  }, [conversationId, messages, phase, workflow, workflowSubmitted, sapSelection, saveConversation]);
+
+  // ── Conversation management ───────────────────────────────────────────────
+  const resetConversation = () => {
+    setConversationId(newConvId());
+    setMessages([initialMessage]);
+    setPhase("idle");
+    setWorkflow(null);
+    setWorkflowSubmitted(false);
+    setSapSelection(emptySap);
+  };
 
   const handleLogout = () => {
     logout();
     setAuthenticated(false);
-    setMessages([initialMessage]);
-    setConversationId(newConvId());
-    loadedFromHistory.current = false;
+    resetConversation();
   };
 
-  const resetConversation = () => {
-    setMessages([initialMessage]);
-    setConversationId(newConvId());
-    loadedFromHistory.current = false;
-  };
-
-  // Load a saved conversation from the sidebar history list.
+  // Restore a saved conversation — messages AND all phase/workflow state.
   const loadConversation = (saved) => {
-    setMessages(saved.messages);
     setConversationId(saved.id);
-    loadedFromHistory.current = true;
+    setMessages(saved.messages ?? [initialMessage]);
+    setPhase(saved.phase ?? "idle");
+    setWorkflow(saved.workflow ?? null);
+    setWorkflowSubmitted(saved.workflowSubmitted ?? false);
+    setSapSelection(saved.sapSelection ?? emptySap);
   };
-
-  // Auto-save the active conversation whenever messages change.
-  useEffect(() => {
-    saveConversation(conversationId, messages);
-  }, [conversationId, messages, saveConversation]);
 
   if (!authenticated) return <LoginPage onLogin={() => setAuthenticated(true)} />;
 
@@ -65,6 +82,14 @@ export default function App() {
         messages={messages}
         setMessages={setMessages}
         conversationId={conversationId}
+        phase={phase}
+        setPhase={setPhase}
+        workflow={workflow}
+        setWorkflow={setWorkflow}
+        workflowSubmitted={workflowSubmitted}
+        setWorkflowSubmitted={setWorkflowSubmitted}
+        sapSelection={sapSelection}
+        setSapSelection={setSapSelection}
       />
     </div>
   );

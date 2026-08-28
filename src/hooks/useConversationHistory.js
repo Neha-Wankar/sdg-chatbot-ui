@@ -23,11 +23,14 @@ function saveHistory(history) {
 /**
  * Manages the persisted list of past conversations.
  *
+ * Each entry stores: { id, title, createdAt, messages, phase,
+ *                      workflow, workflowSubmitted, sapSelection }
+ *
  * Returns:
- *   history          — array of { id, title, createdAt, messages }
- *   saveConversation — upsert the active conversation snapshot
+ *   history            — array of conversation entries
+ *   saveConversation   — upsert the active conversation snapshot
  *   deleteConversation — remove one entry by id
- *   clearHistory     — wipe everything
+ *   clearHistory       — wipe everything
  */
 export function useConversationHistory() {
   const [history, setHistory] = useState(loadHistory);
@@ -37,7 +40,7 @@ export function useConversationHistory() {
     saveHistory(history);
   }, [history]);
 
-  const saveConversation = useCallback((id, messages) => {
+  const saveConversation = useCallback((id, messages, state = {}) => {
     // Only persist conversations that have at least one user message.
     const hasUserMessage = messages.some((m) => m.role === "user");
     if (!hasUserMessage) return;
@@ -53,7 +56,7 @@ export function useConversationHistory() {
       let updated;
       if (exists) {
         updated = prev.map((c) =>
-          c.id === id ? { ...c, title, messages } : c
+          c.id === id ? { ...c, title, messages, ...state } : c
         );
       } else {
         const newEntry = {
@@ -61,6 +64,7 @@ export function useConversationHistory() {
           title,
           createdAt: new Date().toISOString(),
           messages,
+          ...state,
         };
         // Newest first; cap at MAX_CONVERSATIONS.
         updated = [newEntry, ...prev].slice(0, MAX_CONVERSATIONS);
