@@ -1,6 +1,30 @@
 import "./Sidebar.css";
 
-export default function Sidebar({ onNewConversation, onLogout }) {
+/** Format a stored ISO timestamp into a short relative label. */
+function relativeDate(isoString) {
+  try {
+    const diff = Date.now() - new Date(isoString).getTime();
+    const minutes = Math.floor(diff / 60_000);
+    if (minutes < 1) return "Just now";
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days}d ago`;
+    return new Date(isoString).toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  } catch {
+    return "";
+  }
+}
+
+export default function Sidebar({
+  onNewConversation,
+  onLogout,
+  history = [],
+  activeConversationId,
+  onLoadConversation,
+  onDeleteConversation,
+}) {
   return (
     <aside className="flex flex-col shrink-0 h-dvh overflow-hidden sidebar-responsive bg-brand-dark">
       {/* Brand header */}
@@ -38,15 +62,61 @@ export default function Sidebar({ onNewConversation, onLogout }) {
           Workspace
         </div>
 
-        {/* Search history */}
-        <button className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm text-left transition-colors text-white/60 hover:bg-white/8 hover:text-white/90 group">
-          <span className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-white/50 group-hover:text-white/80 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
-            </svg>
-          </span>
-          <span className="sidebar-label">Search history</span>
-        </button>
+        {/* Saved conversation history */}
+        {history.length === 0 ? (
+          <div className="sidebar-label px-3 py-2 text-xs text-white/30 italic">
+            No saved conversations yet.
+          </div>
+        ) : (
+          <div className="flex flex-col gap-0.5">
+            {history.map((conv) => {
+              const isActive = conv.id === activeConversationId;
+              return (
+                <div
+                  key={conv.id}
+                  className={`group flex items-center gap-2 w-full px-3 py-2 rounded-xl text-left transition-colors cursor-pointer ${
+                    isActive
+                      ? "bg-white/15 text-white"
+                      : "text-white/60 hover:bg-white/8 hover:text-white/90"
+                  }`}
+                  onClick={() => onLoadConversation?.(conv)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === "Enter" && onLoadConversation?.(conv)}
+                  title={conv.title}
+                >
+                  {/* Chat bubble icon */}
+                  <span className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-white/50 group-hover:text-white/80 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                  </span>
+
+                  {/* Title + timestamp */}
+                  <div className="sidebar-label flex-1 min-w-0 overflow-hidden">
+                    <div className="text-xs font-medium leading-snug truncate">{conv.title}</div>
+                    <div className="text-[10px] text-white/35 leading-tight">{relativeDate(conv.createdAt)}</div>
+                  </div>
+
+                  {/* Delete button — only visible on hover */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDeleteConversation?.(conv.id);
+                    }}
+                    className="sidebar-label shrink-0 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-lg hover:bg-white/15 text-white/40 hover:text-white/80"
+                    title="Delete"
+                    aria-label="Delete conversation"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Footer */}
