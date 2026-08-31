@@ -73,11 +73,14 @@ function SortIcon({ dir }) {
 }
 
 // ── Reusable data-table toolbar + table ──────────────────────────────────────
+const PAGE_SIZE = 10;
+
 function DataTable({ columns, dataRows, title, badge }) {
   const [search, setSearch]           = useState("");
   const [sort, setSort]               = useState({ key: null, dir: null });
   const [hiddenCols, setHiddenCols]   = useState(new Set());
   const [colPanelOpen, setColPanelOpen] = useState(false);
+  const [page, setPage]               = useState(1);
   const colPanelRef = useRef(null);
 
   const visibleCols = columns.filter((c) => !hiddenCols.has(c.key));
@@ -98,7 +101,7 @@ function DataTable({ columns, dataRows, title, badge }) {
     });
   };
 
-  const displayRows = useMemo(() => {
+  const filteredRows = useMemo(() => {
     const q = search.trim().toLowerCase();
     let result = q
       ? dataRows.filter((r) => columns.some((c) => String(r[c.key] ?? "").toLowerCase().includes(q)))
@@ -112,6 +115,14 @@ function DataTable({ columns, dataRows, title, badge }) {
     }
     return result;
   }, [dataRows, search, sort, columns]);
+
+  const paginate    = filteredRows.length > PAGE_SIZE;
+  const totalPages  = paginate ? Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE)) : 1;
+  const safePage    = paginate ? Math.min(page, totalPages) : 1;
+  const displayRows = paginate ? filteredRows.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE) : filteredRows;
+
+  // Reset to page 1 whenever search/sort changes
+  useMemo(() => { setPage(1); }, [search, sort]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const downloadCSV = () => {
     const cols = visibleCols;
@@ -251,17 +262,88 @@ function DataTable({ columns, dataRows, title, badge }) {
         </table>
       </div>
 
-      {/* Footer */}
-      <div className="px-4 py-2.5 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between text-xs text-gray-400">
+      {/* Footer / Pagination */}
+      <div className="px-4 py-2.5 border-t border-gray-100 bg-gray-50/50 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-400">
         <span>
-          Showing <span className="font-semibold text-gray-600">{displayRows.length}</span> of{" "}
-          <span className="font-semibold text-gray-600">{dataRows.length}</span> rows
+          Showing{" "}
+          <span className="font-semibold text-gray-600">
+            {paginate
+              ? `${filteredRows.length === 0 ? 0 : (safePage - 1) * PAGE_SIZE + 1}–${Math.min(safePage * PAGE_SIZE, filteredRows.length)}`
+              : filteredRows.length}
+          </span>{" "}
+          of <span className="font-semibold text-gray-600">{filteredRows.length}</span> rows
+          {filteredRows.length !== dataRows.length && (
+            <span className="ml-1">(filtered from {dataRows.length})</span>
+          )}
         </span>
-        {search && (
-          <button onClick={() => setSearch("")} className="text-brand-500 hover:text-brand-600 font-medium transition-colors">
-            Clear search
-          </button>
-        )}
+
+        <div className="flex items-center gap-1">
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="mr-2 text-brand-500 hover:text-brand-600 font-medium transition-colors"
+            >
+              Clear search
+            </button>
+          )}
+
+          {paginate && (
+            <>
+              {/* Prev */}
+              <button
+                type="button"
+                disabled={safePage === 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                className="flex items-center justify-center w-7 h-7 rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                aria-label="Previous page"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+
+              {/* Page numbers */}
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter((p) => p === 1 || p === totalPages || Math.abs(p - safePage) <= 1)
+                .reduce((acc, p, idx, arr) => {
+                  if (idx > 0 && p - arr[idx - 1] > 1) acc.push("…");
+                  acc.push(p);
+                  return acc;
+                }, [])
+                .map((p, idx) =>
+                  p === "…" ? (
+                    <span key={`ellipsis-${idx}`} className="px-1 text-gray-400 select-none">…</span>
+                  ) : (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => setPage(p)}
+                      className={`w-7 h-7 rounded-lg border text-xs font-medium transition ${
+                        p === safePage
+                          ? "bg-brand-500 border-brand-500 text-white"
+                          : "border-gray-200 bg-white text-gray-600 hover:bg-gray-100"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  )
+                )}
+
+              {/* Next */}
+              <button
+                type="button"
+                disabled={safePage === totalPages}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                className="flex items-center justify-center w-7 h-7 rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                aria-label="Next page"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
