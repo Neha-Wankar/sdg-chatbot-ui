@@ -51,6 +51,7 @@ export default function DynamicStepForm({
   readOnly,
   submitted = false,
   highlightRequired = false,
+  sapSelection,
 }) {
   const [values, setValues] = useState(() => getInitialValues(step.fields || [], initialValues));
   const [errors, setErrors] = useState({});
@@ -110,7 +111,7 @@ export default function DynamicStepForm({
               <div className="font-semibold text-sm text-gray-900 leading-tight">{step.name}</div>
             </div>
           </div>
-          <div className="text-xs text-gray-500 mt-1.5">Please provide the following information to continue.</div>
+          <div className="text-xs text-gray-500 mt-1.5">Please provide sample data for the selected system <b>{sapSelection.source}</b> to continue.</div>
         </div>
       )}
 

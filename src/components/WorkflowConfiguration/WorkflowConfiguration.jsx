@@ -147,12 +147,19 @@ export default function WorkflowConfiguration({
             </div>
          )}
 
-         {requiredSteps.map((step) => (
+         <SapSystemSelector
+            disabled={loading || submitted}
+            hideConfirmButton={true}
+            value={sapSelection}
+            onChange={onSapSelectionChange}
+         />
+
+          {requiredSteps.map((step) => (
             <div key={step.id} className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-               <div className="px-4 py-3 border-b border-gray-100 bg-gray-50/80">
+               {/* <div className="px-4 py-3 border-b border-gray-100 bg-gray-50/80">
                   <div className="text-[10px] font-bold uppercase tracking-widest text-brand-600">Required information</div>
                   <div className="font-semibold text-sm text-gray-900 mt-0.5">{step.name}</div>
-               </div>
+               </div> */}
                <div className="p-4">
                   <DynamicStepForm
                      step={step}
@@ -163,17 +170,11 @@ export default function WorkflowConfiguration({
                      submitted={submitted}
                      highlightRequired={validationAttempted}
                      onValuesChange={(values) => onInputChange?.(step.id, values)}
+                     sapSelection={sapSelection}
                   />
                </div>
             </div>
          ))}
-
-         <SapSystemSelector
-            disabled={loading || submitted}
-            hideConfirmButton={true}
-            value={sapSelection}
-            onChange={onSapSelectionChange}
-         />
 
          {Object.keys(validationMessage).length > 0 && (
             <div className="rounded-xl border border-red-200 bg-red-50 p-4 shadow-sm">
