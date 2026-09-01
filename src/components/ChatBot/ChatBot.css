@@ -1,3 +1,32 @@
+/* ── Main background ─────────────────────────────────────────────── */
+.chat-main-bg {
+  background: linear-gradient(160deg, #f0f4f9 0%, #eaeff7 60%, #f0f4f9 100%);
+}
+
+/* ── Header ──────────────────────────────────────────────────────── */
+.chat-header {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(209, 213, 219, 0.6);
+  box-shadow: 0 1px 12px rgb(0 0 0 / 0.06), 0 0 0 1px rgba(255,255,255,0.8) inset;
+}
+
+/* AI icon in header */
+.ai-header-avatar {
+  background: linear-gradient(135deg, rgb(65 116 192) 0%, rgb(42 76 130) 100%);
+  box-shadow: 0 4px 12px rgb(65 116 192 / 0.35), 0 1px 2px rgb(0 0 0 / 0.1);
+}
+
+/* Status badge */
+.status-badge {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.05);
+}
+
+/* ── Chat workspace ──────────────────────────────────────────────── */
 .chat-workspace {
   min-height: 0;
   overflow: hidden;
@@ -8,6 +37,20 @@
   scrollbar-gutter: stable;
 }
 
+/* ── AI message bubble ────────────────────────────────────────────── */
+.ai-bubble-avatar {
+  background: linear-gradient(135deg, rgb(65 116 192) 0%, rgb(42 76 130) 100%);
+  box-shadow: 0 3px 10px rgb(65 116 192 / 0.3);
+}
+
+.ai-message-bubble {
+  background: #ffffff;
+  border: 1px solid rgba(209, 213, 219, 0.7);
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.06);
+}
+
+/* ── Suggestion chips ─────────────────────────────────────────────── */
 .suggestion-chip {
   width: calc(50% - 0.25rem);
 }

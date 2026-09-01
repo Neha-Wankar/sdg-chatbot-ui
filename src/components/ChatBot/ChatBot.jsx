@@ -232,25 +232,41 @@ export default function ChatBot({
   const inputDisabled = loading || Boolean(workflow) || phase === "cutoff-select" || phase === "searching" || phase === "scenario-select";
 
   return (
-    <main className="flex-1 min-w-0 flex flex-col bg-[#f0f4f9]">
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-gray-200/80 px-5 py-3 flex justify-between items-center shrink-0 shadow-sm">
+    <main className="flex-1 min-w-0 flex flex-col chat-main-bg">
+      {/* ── Header ─────────────────────────────────────────────────────── */}
+      <header className="chat-header shrink-0 flex justify-between items-center px-5 py-3">
+        {/* Left: avatar + title */}
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-brand-500 flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-sm shadow-brand-500/30">
-            AI
+          <div className="ai-header-avatar w-10 h-10 rounded-2xl flex items-center justify-center shrink-0">
+            {/* Brain / sparkle icon */}
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
           </div>
           <div>
             <h1 className="text-sm font-bold text-gray-900 tracking-tight leading-tight">Synthetic Data Generator</h1>
-            <p className="text-[11px] text-gray-400 leading-tight">Nestle business requirement intelligence</p>
+            <p className="text-[11px] text-gray-400 leading-tight mt-0.5">Nestlé business requirement intelligence</p>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
-          Assistant ready
+
+        {/* Right: model badge + status pill */}
+        <div className="flex items-center gap-2">
+          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-100 border border-gray-200 text-[11px] font-semibold text-gray-500">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            SDG Model
+          </div>
+          <div className="status-badge flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
+            <span className="hidden sm:inline">
+              {loading ? "Processing…" : "Ready"}
+            </span>
+          </div>
         </div>
       </header>
 
-      {/* Chat area */}
+      {/* ── Chat area ──────────────────────────────────────────────────── */}
       <section className="chat-workspace flex-1 flex flex-col min-h-0">
         <div ref={chatScrollRef} className="chat-messages flex-1 min-h-0 overflow-y-auto overflow-x-hidden">
           <div className="max-w-250 w-full mx-auto px-4 md:px-8 py-5 md:py-7">
@@ -286,10 +302,12 @@ export default function ChatBot({
 
             {loading && (
               <div className="flex gap-3 items-start my-4" ref={latestResponseRef}>
-                <div className="w-9 h-9 shrink-0 rounded-xl bg-brand-500 flex items-center justify-center text-white text-xs font-bold shadow-sm shadow-brand-500/25">
-                  AI
+                <div className="ai-bubble-avatar w-9 h-9 shrink-0 rounded-2xl flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-500 flex items-center gap-2.5 shadow-sm">
+                <div className="ai-message-bubble px-4 py-3 text-sm text-gray-500 flex items-center gap-2.5">
                   <span className="flex gap-1 items-center">
                     <span className="w-1.5 h-1.5 rounded-full bg-brand-400 animate-bounce [animation-delay:0ms]" />
                     <span className="w-1.5 h-1.5 rounded-full bg-brand-400 animate-bounce [animation-delay:150ms]" />
@@ -322,8 +340,8 @@ export default function ChatBot({
           </div>
         </div>
 
-        {/* Composer */}
-        <div className="shrink-0 px-4 md:px-8 pb-4 pt-2">
+        {/* ── Composer ────────────────────────────────────────────────── */}
+        <div className="shrink-0 px-4 md:px-8 pb-5 pt-2">
           <RequirementInput
             value={input}
             disabled={inputDisabled}
