@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { SAP_IDS } from "../../mock/sapSystems/sapSystems";
 
 function getInitialValues(fields, previous = {}) {
   return fields.reduce((acc, field) => {
@@ -49,7 +50,6 @@ export default function DynamicStepForm({
   disabled,
   hideSubmit,
   readOnly,
-  submitted = false,
   highlightRequired = false,
   sapSelection,
 }) {
@@ -111,7 +111,13 @@ export default function DynamicStepForm({
               <div className="font-semibold text-sm text-gray-900 leading-tight">{step.name}</div>
             </div>
           </div>
-          <div className="text-xs text-gray-500 mt-1.5">Please provide sample data for the selected system <b>{sapSelection.source}</b> to continue.</div>
+          <div className="text-xs text-gray-500 mt-1.5">
+            Please provide selection criteria to pull sample data from system <b>{sapSelection?.source}</b>
+            {sapSelection?.sourceLandscape && sapSelection?.source && SAP_IDS[sapSelection.sourceLandscape]?.[sapSelection.source]
+              ? <> and system ID <b>{SAP_IDS[sapSelection.sourceLandscape][sapSelection.source]}</b></>
+              : null
+            } to continue.
+          </div>
         </div>
       )}
 
