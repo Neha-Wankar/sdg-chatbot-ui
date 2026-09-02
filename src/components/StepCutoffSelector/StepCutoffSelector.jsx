@@ -115,7 +115,7 @@ export default function StepCutoffSelector({
             checked={selectAll}
             disabled={disabled || steps.length === 0}
             onChange={(event) => handleSelectAll(event.target.checked)}
-            className="h-4 w-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500"
+            className="h-4 w-4 rounded border-gray-300 accent-brand-500 text-brand-500 focus:ring-brand-500"
           />
 
           <span>Select all process steps</span>

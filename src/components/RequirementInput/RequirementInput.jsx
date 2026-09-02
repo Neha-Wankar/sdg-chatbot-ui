@@ -57,13 +57,13 @@ export default function RequirementInput({ value, disabled, onChange, onSubmit }
       <div className="flex items-center justify-between px-3 pb-2.5 pt-1">
         {/* Left hint */}
         <div className="flex items-center gap-2 text-[11px] text-gray-400">
-          <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-100 border border-gray-200">
+          {/* <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-gray-100 border border-gray-200">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-2.5 h-2.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
             </svg>
             <span className="font-mono text-[10px]">Enter</span>
           </div>
-          <span>to send</span>
+          <span>to send</span> */}
           {disabled && !value && (
             <span className="text-amber-500 font-medium ml-1">· Input locked during workflow</span>
           )}
