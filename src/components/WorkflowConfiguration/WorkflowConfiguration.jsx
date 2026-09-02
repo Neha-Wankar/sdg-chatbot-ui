@@ -155,56 +155,46 @@ export default function WorkflowConfiguration({
          />
 
           {requiredSteps.map((step) => (
-            <div key={step.id} className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-               {/* <div className="px-4 py-3 border-b border-gray-100 bg-gray-50/80">
-                  <div className="text-[10px] font-bold uppercase tracking-widest text-brand-600">Required information</div>
-                  <div className="font-semibold text-sm text-gray-900 mt-0.5">{step.name}</div>
-               </div> */}
-               <div className="p-4">
-                  <DynamicStepForm
-                     step={step}
-                     initialValues={workflowValues?.[step.id] || {}}
-                     hideSubmit={true}
-                     loading={loading || submitted}
-                     disabled={loading || submitted}
-                     submitted={submitted}
-                     highlightRequired={validationAttempted}
-                     onValuesChange={(values) => onInputChange?.(step.id, values)}
-                     sapSelection={sapSelection}
-                  />
-               </div>
-            </div>
+            <DynamicStepForm
+               key={step.id}
+               step={step}
+               initialValues={workflowValues?.[step.id] || {}}
+               hideSubmit={true}
+               loading={loading || submitted}
+               disabled={loading || submitted}
+               submitted={submitted}
+               highlightRequired={validationAttempted}
+               onValuesChange={(values) => onInputChange?.(step.id, values)}
+               sapSelection={sapSelection}
+            />
          ))}
 
          {Object.keys(validationMessage).length > 0 && (
-            <div className="rounded-xl border border-red-200 bg-red-50 p-4 shadow-sm">
+            <div className="rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 shadow-sm">
 
                {/* Header */}
-               <div className="flex items-center gap-2 text-red-800 font-semibold text-sm mb-4">
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-500 font-bold">
+               <div className="flex items-center gap-2 text-red-800 font-semibold text-xs mb-2">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-500 font-bold text-[11px]">
                      !
                   </span>
-
-                  <span>
-                     Please complete the required information before submitting -
-                  </span>
+                  <span>Please complete the required information before submitting</span>
                </div>
 
                {/* Grouped validation messages */}
-               <div className="space-y-4 ml-9">
+               <div className="space-y-2 ml-7">
                   {Object.entries(validationMessage).map(
                      ([stepName, fields]) => (
                         <div key={stepName}>
                            {/* Step / Section name */}
-                           <div className="font-semibold text-red-800 text-sm mb-1.5">
+                           <div className="font-semibold text-red-800 text-xs mb-1">
                               {stepName}
                            </div>
                            {/* Missing fields */}
-                           <ul className="space-y-1.5 ml-3">
+                           <ul className="space-y-1 ml-2">
                               {fields.map((field) => (
                                  <li
                                     key={field}
-                                    className="flex items-center gap-2 text-sm text-red-700"
+                                    className="flex items-center gap-1.5 text-xs text-red-700"
                                  >
                                     <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
                                     <span>{field}</span>
@@ -224,7 +214,7 @@ export default function WorkflowConfiguration({
                   type="button"
                   onClick={handleSubmit}
                   disabled={loading}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm text-white font-semibold transition-all bg-brand-500 hover:bg-brand-600 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-brand-500/20"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs text-white font-semibold transition-all bg-brand-500 hover:bg-brand-600 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-brand-500/20"
                >
                   {loading ? "Processing…" : "Submit workflow"}
                   {!loading && <span>✓</span>}
@@ -233,19 +223,19 @@ export default function WorkflowConfiguration({
          )}
 
          {submitted && (
-            <div className="space-y-3 pt-1">
-               <div ref={submittedSuccessRef} className="flex items-start gap-3 px-4 py-3.5 rounded-2xl border border-emerald-200 bg-emerald-50 text-sm text-emerald-700 shadow-sm">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">✓</div>
+            <div className="space-y-2 pt-1">
+               <div ref={submittedSuccessRef} className="flex items-start gap-2.5 px-3.5 py-2.5 rounded-2xl border border-emerald-200 bg-emerald-50 text-xs text-emerald-700 shadow-sm">
+                  <div className="w-6 h-6 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0 text-emerald-600">✓</div>
                   <div>
                      <div className="font-semibold text-emerald-800">Workflow submitted successfully</div>
-                     <div className="text-xs text-emerald-600 mt-0.5">You can now review and configure the masking data below.</div>
+                     <div className="text-[11px] text-emerald-600 mt-0.5">You can now review and configure the masking data below.</div>
                   </div>
                </div>
-               <div className="flex items-start gap-3 px-4 py-3.5 rounded-2xl border border-brand-200 bg-brand-50 text-sm text-brand-700 shadow-sm">
-                  <div className="w-8 h-8 rounded-xl bg-brand-100 flex items-center justify-center shrink-0">✓</div>
+               <div className="flex items-start gap-2.5 px-3.5 py-2.5 rounded-2xl border border-brand-200 bg-brand-50 text-xs text-brand-700 shadow-sm">
+                  <div className="w-6 h-6 rounded-lg bg-brand-100 flex items-center justify-center shrink-0 text-brand-600">✓</div>
                   <div>
                      <div className="font-semibold text-brand-800">Review masking configuration</div>
-                     <div className="text-xs text-brand-600 mt-0.5">Configure data masking before generating synthetic records.</div>
+                     <div className="text-[11px] text-brand-600 mt-0.5">Configure data masking before generating synthetic records.</div>
                   </div>
                </div>
                <MaskingDataTable />

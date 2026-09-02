@@ -107,14 +107,14 @@ export default function StepCutoffSelector({
   const canConfirm = selectedIndex !== null && steps.length > 0;
 
   return (
-    <div ref={cardRef} className="mt-3 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+    <div ref={cardRef} className="mt-2 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-gray-100 bg-gray-50/60">
-        <div className="flex items-center gap-2 mb-1">
-          <div className="w-6 h-6 rounded-lg bg-emerald-500 flex items-center justify-center shrink-0">
+      <div className="px-3.5 py-2.5 border-b border-gray-100 bg-gray-50/60">
+        <div className="flex items-center gap-2 mb-0.5">
+          <div className="w-5 h-5 rounded-md bg-emerald-500 flex items-center justify-center shrink-0">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-3.5 h-3.5 text-white"
+              className="w-3 h-3 text-white"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -128,13 +128,13 @@ export default function StepCutoffSelector({
             </svg>
           </div>
 
-          <span className="text-sm font-bold text-gray-900">
+          <span className="text-xs font-bold text-gray-900">
             Identified Scenario:{" "}
             <span className="text-brand-600">{scenario?.name}</span>
           </span>
         </div>
 
-        <p className="text-xs text-gray-500 ml-8">
+        <p className="text-[11px] text-gray-500 ml-7">
           {confirmed
             ? "Selected test range is shown below."
             : "Select up to which step you want to perform the test."}
@@ -143,36 +143,36 @@ export default function StepCutoffSelector({
 
       {/* Select all */}
       <div
-        className={`px-4 py-3 border-b border-gray-100 flex items-center justify-between gap-4 transition-colors ${
+        className={`px-3.5 py-2 border-b border-gray-100 flex items-center justify-between gap-3 transition-colors ${
           selectAll ? "bg-brand-50" : "bg-white"
         }`}
       >
         {/* Left: icon + label + count */}
-        <div className="flex items-center gap-3 min-w-0">
+        <div className="flex items-center gap-2.5 min-w-0">
           {/* Animated checkmark icon */}
           <div
-            className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all ${
+            className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 transition-all ${
               selectAll
                 ? "bg-brand-500 shadow-sm shadow-brand-500/30"
                 : "bg-gray-100"
             }`}
           >
             {selectAll ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
               </svg>
             )}
           </div>
 
           <div className="min-w-0">
-            <p className={`text-sm font-semibold leading-tight ${selectAll ? "text-brand-700" : "text-gray-800"}`}>
+            <p className={`text-xs font-semibold leading-tight ${selectAll ? "text-brand-700" : "text-gray-800"}`}>
               Select all process steps
             </p>
-            <p className="text-[11px] text-gray-400 mt-0.5">
+            <p className="text-[10px] text-gray-400 mt-0.5">
               {selectAll
                 ? `All ${steps.length} steps will be included`
                 : `${steps.length} step${steps.length !== 1 ? "s" : ""} available`}
@@ -203,7 +203,7 @@ export default function StepCutoffSelector({
 
       {/* ── Page range label ──────────────────────────────────────────── */}
       {steps.length > 0 && (
-        <div className="px-4 pt-3 pb-0 flex items-center justify-between">
+        <div className="px-3.5 pt-2 pb-0 flex items-center justify-between">
           <span className="text-[11px] font-medium text-gray-400">
             Showing steps{" "}
             <span className="font-semibold text-gray-600">{pageStart + 1}–{pageEnd}</span>
@@ -218,7 +218,7 @@ export default function StepCutoffSelector({
       )}
 
       {/* Steps list */}
-      <div className="px-4 py-3 flex flex-col gap-1.5">
+      <div className="px-3.5 py-2 flex flex-col gap-1">
         {visibleSteps.map((step, localIndex) => {
           const index = pageStart + localIndex;
 
@@ -235,7 +235,7 @@ export default function StepCutoffSelector({
               type="button"
               disabled={disabled}
               onClick={() => handleStepSelect(index)}
-              className={`flex items-center gap-3 w-full text-left px-3.5 py-2.5 rounded-xl border transition-all ${
+              className={`flex items-center gap-2.5 w-full text-left px-3 py-2 rounded-xl border transition-all ${
                 isSelected
                   ? "border-2 border-brand-400 bg-brand-50 shadow-sm"
                   : isBeforeSelected
@@ -247,7 +247,7 @@ export default function StepCutoffSelector({
             >
               {/* Step number */}
               <span
-                className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-all ${
+                className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-all ${
                   isSelected
                     ? "bg-brand-500 text-white shadow-sm"
                     : isBeforeSelected
@@ -279,7 +279,7 @@ export default function StepCutoffSelector({
 
               {/* Step name */}
               <span
-                className={`flex-1 text-sm font-medium ${
+                className={`flex-1 text-xs font-medium ${
                   isSelected
                     ? "text-brand-700"
                     : isBeforeSelected
@@ -383,7 +383,7 @@ export default function StepCutoffSelector({
       )}
 
       {/* Footer */}
-      <div className="px-4 py-3 border-t border-gray-100 bg-gray-50/40 flex items-center justify-end gap-3">
+      <div className="px-3.5 py-2 border-t border-gray-100 bg-gray-50/40 flex items-center justify-end gap-3">
         {!confirmed && (
           <button
             type="button"
@@ -395,7 +395,7 @@ export default function StepCutoffSelector({
                 selectAll,
               })
             }
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-brand-500 hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.97] shadow-sm shadow-brand-500/25 transition-all shrink-0"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-white bg-brand-500 hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.97] shadow-sm shadow-brand-500/25 transition-all shrink-0"
           >
             Continue
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

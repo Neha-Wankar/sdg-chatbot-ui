@@ -64,7 +64,7 @@ function SelectionPanel({ label, isTarget, selectedZone, selectedSystem, onSelec
   const progressW  = !selectedZone ? "w-0" : !selectedSystem ? "w-1/3" : !isComplete ? "w-2/3" : "w-full";
 
   return (
-    <div className={`flex flex-col rounded-xl overflow-hidden border ${t.panelBorder} shadow-sm`}>
+    <div className={`flex flex-col rounded-xl overflow-hidden border ${t.panelBorder} shadow-sm ${disabled ? "pointer-events-none" : ""}`}>
 
       {/* ── Panel title bar ── */}
       <div className={`px-3 py-2 flex items-center justify-between ${t.header}`}>
@@ -124,8 +124,7 @@ function SelectionPanel({ label, isTarget, selectedZone, selectedSystem, onSelec
                 disabled={disabled}
                 onClick={() => { onSelectZone(zone); onSelectSystem(null); }}
                 className={`relative flex items-center gap-1.5 px-2.5 py-2 border-b border-white/10 last:border-b-0 text-left transition-all duration-150
-                  ${isHighlight ? `${t.header} text-white` : isActive ? `${t.lightBg} ${t.text}` : "bg-white text-gray-700 hover:bg-gray-50"}
-                  disabled:opacity-40 disabled:cursor-not-allowed`}
+                  ${isHighlight ? `${t.header} text-white` : isActive ? `${t.lightBg} ${t.text}` : "bg-white text-gray-700 hover:bg-gray-50"}`}
               >
                 {isHighlight && <span className="absolute left-0 top-1 bottom-1 w-0.5 rounded-full bg-white/50" />}
                 <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${isHighlight ? "bg-white/70" : t.dot}`} />
@@ -161,8 +160,7 @@ function SelectionPanel({ label, isTarget, selectedZone, selectedSystem, onSelec
                       ? `${t.lightBg} ${t.text}`
                       : hasId
                         ? "bg-white text-gray-700 hover:bg-gray-50"
-                        : "bg-white text-gray-300 cursor-not-allowed"}
-                  disabled:opacity-40 disabled:cursor-not-allowed`}
+                        : "bg-white text-gray-300 cursor-not-allowed"}`}
               >
                 {isHighlight && <span className="absolute left-0 top-1 bottom-1 w-0.5 rounded-full bg-white/50" />}
                 <span className={isHighlight ? "text-white/80" : isActive ? t.text : "text-gray-400"}>{SYS_ICON[sys]}</span>

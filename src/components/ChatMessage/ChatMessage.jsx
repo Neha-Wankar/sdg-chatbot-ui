@@ -11,11 +11,11 @@ export default function ChatMessage({
   const isUser = message.role === "user";
 
   return (
-    <div className={`flex gap-3 my-4 items-start ${isUser ? "justify-end" : ""}`}>
+    <div className={`flex gap-2.5 my-2.5 items-start ${isUser ? "justify-end" : ""}`}>
       {/* ── Bot avatar ─────────────────────────────────────────── */}
       {!isUser && (
-        <div className="ai-msg-avatar w-9 h-9 shrink-0 rounded-2xl flex items-center justify-center mt-0.5">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <div className="ai-msg-avatar w-7 h-7 shrink-0 rounded-xl flex items-center justify-center mt-0.5">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
           </svg>
         </div>
@@ -23,13 +23,13 @@ export default function ChatMessage({
 
       <div className="flex-1 min-w-0 max-w-[820px]">
         {/* ── Sender label ───────────────────────────────────── */}
-        <div className={`text-[10px] font-bold mb-1 tracking-wide uppercase ${isUser ? "text-right text-brand-500/70 mr-1" : "text-gray-400 ml-1"}`}>
+        <div className={`text-[9px] font-bold mb-0.5 tracking-wide uppercase ${isUser ? "text-right text-brand-500/70 mr-1" : "text-gray-400 ml-1"}`}>
           {isUser ? "You" : "SDG Assistant"}
         </div>
 
         {/* ── Message bubble ─────────────────────────────────── */}
         <div
-          className={`px-4 py-3 text-sm leading-relaxed ${
+          className={`px-3.5 py-2 text-xs leading-relaxed ${
             isUser
               ? "user-bubble text-white ml-auto max-w-fit"
               : message.error
@@ -61,8 +61,8 @@ export default function ChatMessage({
 
       {/* ── User avatar ────────────────────────────────────────── */}
       {isUser && (
-        <div className="you-msg-avatar w-9 h-9 shrink-0 rounded-2xl flex items-center justify-center mt-0.5">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <div className="you-msg-avatar w-7 h-7 shrink-0 rounded-xl flex items-center justify-center mt-0.5">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
           </svg>
         </div>

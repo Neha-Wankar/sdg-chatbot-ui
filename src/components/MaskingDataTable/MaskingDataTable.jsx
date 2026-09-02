@@ -142,13 +142,13 @@ function DataTable({ columns, dataRows, title, badge }) {
   return (
     <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
       {title && (
-        <div className="px-4 pt-4 pb-3 border-b border-gray-100 flex items-center gap-2">
-          <h2 className="text-sm font-semibold text-gray-900">{title}</h2>
-          {badge && <span className="text-green-600 text-sm font-medium">{badge}</span>}
+        <div className="px-3.5 pt-3 pb-2.5 border-b border-gray-100 flex items-center gap-2">
+          <h2 className="text-xs font-semibold text-gray-900">{title}</h2>
+          {badge && <span className="text-green-600 text-xs font-medium">{badge}</span>}
         </div>
       )}
       {/* Toolbar */}
-      <div className="px-4 py-3 border-b border-gray-100 flex flex-wrap items-center gap-2 bg-gray-50/50">
+      <div className="px-3.5 py-2 border-b border-gray-100 flex flex-wrap items-center gap-2 bg-gray-50/50">
         {/* Search */}
         <div className="relative flex-1 min-w-[180px] max-w-xs">
           <svg xmlns="http://www.w3.org/2000/svg" className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -226,7 +226,7 @@ function DataTable({ columns, dataRows, title, badge }) {
               {visibleCols.map((col) => (
                 <th
                   key={col.key}
-                  className={`px-4 py-3 text-left text-xs font-semibold text-gray-500 whitespace-nowrap select-none ${col.sortable ? "cursor-pointer hover:bg-gray-100 transition-colors" : ""}`}
+                  className={`px-3 py-2 text-left text-xs font-semibold text-gray-500 whitespace-nowrap select-none ${col.sortable ? "cursor-pointer hover:bg-gray-100 transition-colors" : ""}`}
                   onClick={col.sortable ? () => toggleSort(col.key) : undefined}
                 >
                   <span className="flex items-center gap-1.5">
@@ -240,7 +240,7 @@ function DataTable({ columns, dataRows, title, badge }) {
           <tbody className="divide-y divide-gray-100">
             {displayRows.length === 0 ? (
               <tr>
-                <td colSpan={visibleCols.length} className="px-4 py-10 text-center text-xs font-sans text-gray-400">
+                <td colSpan={visibleCols.length} className="px-3 py-8 text-center text-xs font-sans text-gray-400">
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-gray-200 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 0 5 11a6 6 0 0 0 12 0z" />
                   </svg>
@@ -251,7 +251,7 @@ function DataTable({ columns, dataRows, title, badge }) {
               displayRows.map((row, rowIdx) => (
                 <tr key={row.id} className={`transition-colors hover:bg-gray-50/60 ${rowIdx % 2 === 0 ? "" : "bg-gray-50/30"}`}>
                   {visibleCols.map((col) => (
-                    <td key={col.key} className="px-4 py-2.5 text-xs font-sans text-gray-800 whitespace-pre-wrap max-w-[160px]">
+                    <td key={col.key} className="px-3 py-1.5 text-xs font-sans text-gray-800 whitespace-pre-wrap max-w-[160px]">
                       {String(row[col.key] ?? "")}
                     </td>
                   ))}
@@ -263,7 +263,7 @@ function DataTable({ columns, dataRows, title, badge }) {
       </div>
 
       {/* Footer / Pagination */}
-      <div className="px-4 py-2.5 border-t border-gray-100 bg-gray-50/50 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-400">
+      <div className="px-3.5 py-2 border-t border-gray-100 bg-gray-50/50 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-400">
         <span>
           Showing{" "}
           <span className="font-semibold text-gray-600">
@@ -480,11 +480,11 @@ export default function MaskingDataTable({ initialRows }) {
     <>
       <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
         {/* Table heading */}
-        <div className="px-4 pt-4 pb-3 border-b border-gray-100">
-          <h2 className="text-sm font-semibold text-gray-900">Review and Configure Masking</h2>
+        <div className="px-3.5 pt-3 pb-2.5 border-b border-gray-100">
+          <h2 className="text-xs font-semibold text-gray-900">Review and Configure Masking</h2>
         </div>
         {/* Toolbar */}
-        <div className="px-4 py-3 border-b border-gray-100 flex flex-wrap items-center gap-2 bg-gray-50/50">
+        <div className="px-3.5 py-2 border-b border-gray-100 flex flex-wrap items-center gap-2 bg-gray-50/50">
           {/* Search */}
           <div className="relative flex-1 min-w-[180px] max-w-xs">
             <svg xmlns="http://www.w3.org/2000/svg" className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -562,7 +562,7 @@ export default function MaskingDataTable({ initialRows }) {
                 {visibleCols.map((col) => (
                   <th
                     key={col.key}
-                    className={`px-4 py-3 text-left text-xs font-semibold text-gray-500 whitespace-nowrap select-none ${col.sortable ? "cursor-pointer hover:bg-gray-100 transition-colors" : ""}`}
+                    className={`px-3 py-2 text-left text-xs font-semibold text-gray-500 whitespace-nowrap select-none ${col.sortable ? "cursor-pointer hover:bg-gray-100 transition-colors" : ""}`}
                     onClick={col.sortable ? () => toggleSort(col.key) : undefined}
                   >
                     <span className="flex items-center gap-1.5">
@@ -576,7 +576,7 @@ export default function MaskingDataTable({ initialRows }) {
             <tbody className="divide-y divide-gray-100">
               {displayRows.length === 0 ? (
                 <tr>
-                  <td colSpan={visibleCols.length} className="px-4 py-10 text-center text-xs font-sans text-gray-400">
+                  <td colSpan={visibleCols.length} className="px-3 py-8 text-center text-xs font-sans text-gray-400">
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-gray-200 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 0 5 11a6 6 0 0 0 12 0z" />
                     </svg>
@@ -587,7 +587,7 @@ export default function MaskingDataTable({ initialRows }) {
                 displayRows.map((row, rowIdx) => (
                   <tr key={row.id} className={`transition-colors hover:bg-gray-50/60 ${rowIdx % 2 === 0 ? "" : "bg-gray-50/30"}`}>
                     {visibleCols.map((col) => (
-                      <td key={col.key} className="px-4 py-3 text-xs font-sans text-gray-800 whitespace-nowrap">
+                      <td key={col.key} className="px-3 py-2 text-xs font-sans text-gray-800 whitespace-nowrap">
                         {col.key === "maskProvider" ? (
                           <div className="flex items-center gap-2">
                             <span className={`text-xs font-sans font-semibold px-2 py-0.5 rounded-full border ${PROVIDER_COLORS[row.maskProvider] || PROVIDER_COLORS.none}`}>
@@ -616,7 +616,7 @@ export default function MaskingDataTable({ initialRows }) {
         </div>
 
         {/* Footer */}
-        <div className="px-4 py-2.5 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between text-xs text-gray-400">
+        <div className="px-3.5 py-2 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between text-xs text-gray-400">
           <span>Showing <span className="font-semibold text-gray-600">{displayRows.length}</span> of <span className="font-semibold text-gray-600">{rows.length}</span> rows</span>
           {search && (
             <button onClick={() => setSearch("")} className="text-brand-500 hover:text-brand-600 font-medium transition-colors">
@@ -627,9 +627,9 @@ export default function MaskingDataTable({ initialRows }) {
       </div>
 
       {/* Generate masking configuration */}
-      <div className="mt-3 flex flex-col items-end gap-2">
+      <div className="mt-2 flex flex-col items-end gap-1.5">
         {maskingGenerated && (
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm font-medium w-full">
+          <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-green-50 border border-green-200 text-green-700 text-xs font-medium w-full">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
@@ -642,7 +642,7 @@ export default function MaskingDataTable({ initialRows }) {
               type="button"
               onClick={handlePreview}
               disabled={previewLoading || previewDone}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-brand-600 text-brand-600 hover:bg-brand-50 active:bg-brand-100 text-sm font-semibold shadow-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-brand-600 text-brand-600 hover:bg-brand-50 active:bg-brand-100 text-xs font-semibold shadow-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -655,7 +655,7 @@ export default function MaskingDataTable({ initialRows }) {
             type="button"
             disabled={!isDirty}
             onClick={() => { setMaskingGenerated(true); setIsDirty(false); }}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-sm font-semibold shadow-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-xs font-semibold shadow-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -667,7 +667,7 @@ export default function MaskingDataTable({ initialRows }) {
 
       {/* Loading banner */}
       {previewLoading && (
-        <div className="mt-4 flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-brand-50 border border-brand-200 text-brand-700 text-sm font-medium">
+        <div className="mt-3 flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl bg-brand-50 border border-brand-200 text-brand-700 text-xs font-medium">
           <svg className="w-4 h-4 animate-spin shrink-0 text-brand-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
@@ -678,7 +678,7 @@ export default function MaskingDataTable({ initialRows }) {
 
       {/* Preview table */}
       {previewDone && previewRows.length > 0 && (
-        <div className="mt-4">
+        <div className="mt-3">
           <DataTable
             columns={PREVIEW_COLUMNS}
             dataRows={previewRows}
@@ -686,7 +686,7 @@ export default function MaskingDataTable({ initialRows }) {
             badge="✅ Data masked!"
           />
 
-          <div className="mt-3 flex items-center gap-2 px-4 py-3 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm font-medium">
+          <div className="mt-2 flex items-center gap-2 px-3.5 py-2 rounded-xl bg-green-50 border border-green-200 text-green-700 text-xs font-medium">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
@@ -694,9 +694,9 @@ export default function MaskingDataTable({ initialRows }) {
           </div>
 
           {/* Number of records */}
-          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm px-5 py-4 flex items-center justify-between gap-4 mt-3">
-            <div className="flex items-center gap-3">
-              <div className="text-sm font-semibold text-gray-900">Number of records to generate</div>
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm px-3.5 py-3 flex items-center justify-between gap-3 mt-2">
+            <div className="flex items-center gap-2.5">
+              <div className="text-xs font-semibold text-gray-900">Number of records to generate</div>
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
@@ -729,7 +729,7 @@ export default function MaskingDataTable({ initialRows }) {
               type="button"
               onClick={handleGenerateSynthetic}
               disabled={syntheticLoading || !previewCountTouched}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-sm font-semibold shadow-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed shrink-0"
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-xs font-semibold shadow-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed shrink-0"
             >
               {syntheticLoading ? (
                 <svg className="w-4 h-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -746,7 +746,7 @@ export default function MaskingDataTable({ initialRows }) {
           </div>
           {/* Synthetic loading banner */}
           {syntheticLoading && (
-            <div className="mt-4 flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-brand-50 border border-brand-200 text-brand-700 text-sm font-medium">
+            <div className="mt-3 flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl bg-brand-50 border border-brand-200 text-brand-700 text-xs font-medium">
               <svg className="w-4 h-4 animate-spin shrink-0 text-brand-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
@@ -757,16 +757,16 @@ export default function MaskingDataTable({ initialRows }) {
 
           {/* Synthetic done */}
           {syntheticDone && syntheticRows.length > 0 && (
-            <div className="mt-4">
+            <div className="mt-3">
               {/* Success message */}
-              <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm font-medium mb-2">
+              <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-green-50 border border-green-200 text-green-700 text-xs font-medium mb-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
                 Synthetic data generated successfully!
               </div>
               {/* Info message */}
-              <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-sm font-medium mb-3">
+              <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-medium mb-2">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20A10 10 0 0012 2z" />
                 </svg>
@@ -779,10 +779,10 @@ export default function MaskingDataTable({ initialRows }) {
                 title="Generated Synthetic Data Preview"
                 badge={`✅ Synthetic data unmasked! --> (showing first ${syntheticRows.length})`}
               />
-              <div className="mt-3 flex justify-end">
+              <div className="mt-2 flex justify-end">
                 <button
                   type="button"
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-sm font-semibold shadow-sm transition-colors"
+                  className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white text-xs font-semibold shadow-sm transition-colors"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />

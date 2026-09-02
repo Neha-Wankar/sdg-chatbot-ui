@@ -10,9 +10,9 @@ function getInitialValues(fields, previous = {}) {
 
 function ReadOnlySummary({ step, values }) {
   return (
-    <div className="bg-white border border-emerald-200 rounded-2xl shadow-sm mt-3 overflow-hidden">
+    <div className="bg-white border border-emerald-200 rounded-2xl shadow-sm overflow-hidden">
       {/* Summary header */}
-      <div className="px-4 py-3 border-b border-emerald-100 bg-emerald-50/70 flex items-center gap-2.5">
+      <div className="px-5 py-3.5 border-b border-emerald-100 bg-emerald-50/70 flex items-center gap-2.5">
         <div className="w-7 h-7 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
           <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -25,8 +25,8 @@ function ReadOnlySummary({ step, values }) {
       </div>
 
       {/* Read-only fields */}
-      <div className="p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div className="p-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {(step.fields || []).map((field) => (
             <div key={field.name}>
               <div className="text-xs font-semibold mb-1 text-brand-700">{field.label}</div>
@@ -94,12 +94,12 @@ export default function DynamicStepForm({
 
   return (
     <form
-      className="bg-white border border-gray-200 rounded-2xl shadow-sm mt-3 overflow-hidden"
+      className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden"
       onSubmit={submit}
     >
       {/* Form header — hidden for read-only-fields steps */}
       {!isFieldsReadOnly && (
-        <div className="px-4 py-3 border-b border-gray-100 bg-gray-50/80">
+        <div className="px-4 py-2.5 border-b border-gray-100 bg-gray-50/80">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-lg bg-brand-100 flex items-center justify-center shrink-0">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -107,11 +107,11 @@ export default function DynamicStepForm({
               </svg>
             </div>
             <div>
-              <div className="text-[10px] font-bold uppercase tracking-widest text-brand-600">Input required</div>
-              <div className="font-semibold text-sm text-gray-900 leading-tight">{step.name}</div>
+              <div className="text-[9px] font-bold uppercase tracking-widest text-brand-600">Input required</div>
+              <div className="font-semibold text-xs text-gray-900 leading-tight">{step.name}</div>
             </div>
           </div>
-          <div className="text-xs text-gray-500 mt-1.5">
+          <div className="text-[11px] text-gray-500 mt-1.5">
             Please provide selection criteria to pull sample data from system <b>{sapSelection?.source}</b>
             {sapSelection?.sourceLandscape && sapSelection?.source && SAP_IDS[sapSelection.sourceLandscape]?.[sapSelection.source]
               ? <> and system ID <b>{SAP_IDS[sapSelection.sourceLandscape][sapSelection.source]}</b></>
@@ -122,8 +122,8 @@ export default function DynamicStepForm({
       )}
 
       {/* Fields */}
-      <div className="p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="p-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {(step.fields || []).map((field) => (
             <div key={field.name}>
               <label
