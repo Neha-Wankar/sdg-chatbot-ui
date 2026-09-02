@@ -317,7 +317,7 @@ export default function StepCutoffSelector({
       )}
 
       {/* Footer */}
-      <div className="px-4 py-3 border-t border-gray-100 bg-gray-50/40 flex items-center justify-between gap-3">
+      <div className="px-4 py-3 border-t border-gray-100 bg-gray-50/40 flex items-center justify-end gap-3">
         {/* <div className="text-xs min-w-0">
           {selectedStep ? (
             <span className="text-brand-700 font-semibold">
