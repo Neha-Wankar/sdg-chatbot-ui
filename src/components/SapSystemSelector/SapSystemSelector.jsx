@@ -92,7 +92,7 @@ function SelectionPanel({ label, isTarget, selectedZone, selectedSystem, onSelec
           </span>
         ) : (
           <span className="text-[9px] font-semibold text-white/60">
-            {!selectedZone ? "Pick a zone" : !selectedSystem ? "Pick a system" : "Confirm"}
+            {!selectedZone ? "Pick a landscape" : !selectedSystem ? "Pick a system" : "Confirm"}
           </span>
         )}
       </div>
@@ -112,7 +112,7 @@ function SelectionPanel({ label, isTarget, selectedZone, selectedSystem, onSelec
         <div className="flex-1 flex flex-col min-w-0">
           <div className={`px-2.5 py-1.5 flex items-center gap-1 border-b border-white/20 ${t.header}`}>
             <span className="flex items-center justify-center w-3.5 h-3.5 rounded-full text-[8px] font-extrabold shrink-0 bg-white/25 text-white">1</span>
-            <span className="text-[9px] font-extrabold uppercase tracking-widest text-white/90">Zone</span>
+            <span className="text-[9px] font-extrabold uppercase tracking-widest text-white/90">Landscape</span>
           </div>
           {ZONES.map((zone) => {
             const isActive    = zone === selectedZone;
@@ -247,7 +247,7 @@ export default function SapSystemSelector({ onConfirm, onChange, value, disabled
           <div>
             <p className="text-[12px] font-bold text-gray-900 leading-tight tracking-tight">Select SAP Systems</p>
             <p className="text-[10px] text-gray-500 leading-snug mt-0.5">
-              Choose a Zone and System for Source and Target to reveal the System ID.
+              Choose a Landscape and System for Source and Target to reveal the System ID.
             </p>
           </div>
         </div>
