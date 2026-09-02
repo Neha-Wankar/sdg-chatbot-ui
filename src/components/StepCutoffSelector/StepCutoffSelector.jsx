@@ -1,6 +1,16 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 const PAGE_SIZE = 10;
+
+// Walks up the DOM to find the nearest scrollable ancestor
+function getScrollParent(el) {
+  while (el && el !== document.body) {
+    const { overflowY } = window.getComputedStyle(el);
+    if (overflowY === "auto" || overflowY === "scroll") return el;
+    el = el.parentElement;
+  }
+  return window;
+}
 
 export default function StepCutoffSelector({
   scenario,
@@ -27,6 +37,11 @@ export default function StepCutoffSelector({
   const selectedStep =
     selectedIndex !== null ? steps[selectedIndex] : null;
 
+  // Ref to the card root — used to find the scroll parent
+  const cardRef = useRef(null);
+  // Saved scroll position before a page change
+  const savedScrollRef = useRef(null);
+
   // If the backend returns a different number of steps, make sure the
   // current page is still valid.
   useEffect(() => {
@@ -34,6 +49,19 @@ export default function StepCutoffSelector({
       setCurrentPage(totalPages);
     }
   }, [currentPage, totalPages]);
+
+  // After every currentPage change, restore the scroll position synchronously
+  // before the browser paints — this prevents any visible jump.
+  useLayoutEffect(() => {
+    if (savedScrollRef.current === null) return;
+    const { scrollParent, scrollTop } = savedScrollRef.current;
+    if (scrollParent === window) {
+      window.scrollTo({ top: scrollTop });
+    } else {
+      scrollParent.scrollTop = scrollTop;
+    }
+    savedScrollRef.current = null;
+  }, [currentPage]);
 
   // "Select all" means the test cutoff is the final process step.
   const handleSelectAll = (checked) => {
@@ -59,8 +87,18 @@ export default function StepCutoffSelector({
     setSelectedIndex(index);
   };
 
-  const goToPage = (page) => {
-    if (disabled) return;
+  const goToPage = (page, e) => {
+    e?.preventDefault();
+    e?.currentTarget?.blur();
+
+    // Snapshot scroll position BEFORE state update triggers a re-render
+    if (cardRef.current) {
+      const scrollParent = getScrollParent(cardRef.current);
+      const scrollTop = scrollParent === window
+        ? window.scrollY
+        : scrollParent.scrollTop;
+      savedScrollRef.current = { scrollParent, scrollTop };
+    }
 
     const nextPage = Math.min(Math.max(page, 1), totalPages);
     setCurrentPage(nextPage);
@@ -69,7 +107,7 @@ export default function StepCutoffSelector({
   const canConfirm = selectedIndex !== null && steps.length > 0;
 
   return (
-    <div className="mt-3 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+    <div ref={cardRef} className="mt-3 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
       {/* Header */}
       <div className="px-4 py-3 border-b border-gray-100 bg-gray-50/60">
         <div className="flex items-center gap-2 mb-1">
@@ -104,27 +142,80 @@ export default function StepCutoffSelector({
       </div>
 
       {/* Select all */}
-      <div className="px-4 py-3 border-b border-gray-100 bg-white flex items-center justify-between gap-4">
-        <label
-          className={`flex items-center gap-2.5 text-sm font-semibold text-gray-700 ${
-            disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"
-          }`}
+      <div
+        className={`px-4 py-3 border-b border-gray-100 flex items-center justify-between gap-4 transition-colors ${
+          selectAll ? "bg-brand-50" : "bg-white"
+        }`}
+      >
+        {/* Left: icon + label + count */}
+        <div className="flex items-center gap-3 min-w-0">
+          {/* Animated checkmark icon */}
+          <div
+            className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all ${
+              selectAll
+                ? "bg-brand-500 shadow-sm shadow-brand-500/30"
+                : "bg-gray-100"
+            }`}
+          >
+            {selectAll ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              </svg>
+            )}
+          </div>
+
+          <div className="min-w-0">
+            <p className={`text-sm font-semibold leading-tight ${selectAll ? "text-brand-700" : "text-gray-800"}`}>
+              Select all process steps
+            </p>
+            <p className="text-[11px] text-gray-400 mt-0.5">
+              {selectAll
+                ? `All ${steps.length} steps will be included`
+                : `${steps.length} step${steps.length !== 1 ? "s" : ""} available`}
+            </p>
+          </div>
+        </div>
+
+        {/* Right: custom toggle switch */}
+        <button
+          type="button"
+          role="switch"
+          aria-checked={selectAll}
+          disabled={disabled || steps.length === 0}
+          onClick={() => handleSelectAll(!selectAll)}
+          className={`relative shrink-0 w-11 h-6 rounded-full border-2 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-1 ${
+            selectAll
+              ? "bg-brand-500 border-brand-500"
+              : "bg-gray-200 border-gray-200 hover:border-gray-300"
+          } disabled:opacity-40 disabled:cursor-not-allowed`}
         >
-          <input
-            type="checkbox"
-            checked={selectAll}
-            disabled={disabled || steps.length === 0}
-            onChange={(event) => handleSelectAll(event.target.checked)}
-            className="h-4 w-4 rounded border-gray-300 accent-brand-500 text-brand-500 focus:ring-brand-500"
+          <span
+            className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${
+              selectAll ? "translate-x-5" : "translate-x-0"
+            }`}
           />
-
-          <span>Select all process steps</span>
-        </label>
-
-        <span className="text-[11px] text-gray-400 whitespace-nowrap">
-          {steps.length} step{steps.length !== 1 ? "s" : ""}
-        </span>
+        </button>
       </div>
+
+      {/* ── Page range label ──────────────────────────────────────────── */}
+      {steps.length > 0 && (
+        <div className="px-4 pt-3 pb-0 flex items-center justify-between">
+          <span className="text-[11px] font-medium text-gray-400">
+            Showing steps{" "}
+            <span className="font-semibold text-gray-600">{pageStart + 1}–{pageEnd}</span>
+            {" "}of {steps.length}
+          </span>
+          {totalPages > 1 && (
+            <span className="text-[11px] font-medium text-gray-400">
+              Page <span className="font-semibold text-gray-600">{currentPage}</span> of {totalPages}
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Steps list */}
       <div className="px-4 py-3 flex flex-col gap-1.5">
@@ -248,69 +339,44 @@ export default function StepCutoffSelector({
         <div className="px-4 py-2.5 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between gap-3">
           <button
             type="button"
-            disabled={disabled || currentPage === 1}
-            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            onClick={(e) => goToPage(currentPage - 1, e)}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-xs font-semibold text-gray-600 hover:border-brand-300 hover:text-brand-600 disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-3.5 h-3.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 19l-7-7 7-7"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
             Previous
           </button>
 
           <div className="flex items-center gap-1">
-            {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-              (page) => (
-                <button
-                  key={page}
-                  type="button"
-                  disabled={disabled}
-                  onClick={() => goToPage(page)}
-                  className={`w-7 h-7 rounded-lg text-xs font-semibold transition-all ${
-                    currentPage === page
-                      ? "bg-brand-500 text-white shadow-sm"
-                      : "bg-white border border-gray-200 text-gray-500 hover:border-brand-300 hover:text-brand-600"
-                  } disabled:cursor-not-allowed`}
-                  aria-label={`Go to page ${page}`}
-                  aria-current={currentPage === page ? "page" : undefined}
-                >
-                  {page}
-                </button>
-              )
-            )}
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                type="button"
+                onClick={(e) => goToPage(page, e)}
+                className={`w-7 h-7 rounded-lg text-xs font-semibold transition-all ${
+                  currentPage === page
+                    ? "bg-brand-500 text-white shadow-sm"
+                    : "bg-white border border-gray-200 text-gray-500 hover:border-brand-300 hover:text-brand-600"
+                }`}
+                aria-label={`Go to page ${page}`}
+                aria-current={currentPage === page ? "page" : undefined}
+              >
+                {page}
+              </button>
+            ))}
           </div>
 
           <button
             type="button"
-            disabled={disabled || currentPage === totalPages}
-            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            onClick={(e) => goToPage(currentPage + 1, e)}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-xs font-semibold text-gray-600 hover:border-brand-300 hover:text-brand-600 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Next
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-3.5 h-3.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 5l7 7-7 7"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
           </button>
         </div>
@@ -318,19 +384,7 @@ export default function StepCutoffSelector({
 
       {/* Footer */}
       <div className="px-4 py-3 border-t border-gray-100 bg-gray-50/40 flex items-center justify-end gap-3">
-        {/* <div className="text-xs min-w-0">
-          {selectedStep ? (
-            <span className="text-brand-700 font-semibold">
-              {selectAll
-                ? `All ${steps.length} process steps selected`
-                : `Up to Step ${selectedIndex + 1}: ${selectedStep.name}`}
-            </span>
-          ) : (
-            <span className="text-gray-400">No step selected yet.</span>
-          )}
-        </div> */}
-
-        {!confirmed ? (
+        {!confirmed && (
           <button
             type="button"
             disabled={!canConfirm || disabled}
@@ -344,42 +398,11 @@ export default function StepCutoffSelector({
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-brand-500 hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.97] shadow-sm shadow-brand-500/25 transition-all shrink-0"
           >
             Continue
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-4 h-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2.5}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 5l7 7-7 7"
-              />
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
           </button>
-        ) : ("")
-        //  "" (
-        //   <span className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-brand-700 bg-brand-50 border border-brand-200 shrink-0">
-        //     <svg
-        //       xmlns="http://www.w3.org/2000/svg"
-        //       className="w-4 h-4"
-        //       fill="none"
-        //       viewBox="0 0 24 24"
-        //       stroke="currentColor"
-        //       strokeWidth={2}
-        //     >
-        //       <path
-        //         strokeLinecap="round"
-        //         strokeLinejoin="round"
-        //         d="M5 13l4 4L19 7"
-        //       />
-        //     </svg>
-        //     Test range selected
-        //   </span>
-        // )
-        }
+        )}
       </div>
     </div>
   );
