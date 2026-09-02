@@ -105,7 +105,7 @@ export default function WorkflowConfiguration({
             </div>
          </div>
 
-         {steps.length > 0 && (
+         {/* {steps.length > 0 && (
             <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
                <div className="px-4 py-3 border-b border-gray-100 bg-gray-50/80">
                   <div className="text-[10px] font-bold uppercase tracking-widest text-brand-600">
@@ -145,7 +145,7 @@ export default function WorkflowConfiguration({
                   ))}
                </div>
             </div>
-         )}
+         )} */}
 
          <SapSystemSelector
             disabled={loading || submitted}
