@@ -121,7 +121,7 @@ export default function ChatBot({
   };
 
   // ── Phase 4: User picks the cutoff step ───────────────────────────────────
-  const handleStepCutoffConfirm = ({ upToIndex, upToStep }) => {
+  const handleStepCutoffConfirm = ({ upToIndex, upToStep, selectAll = false }) => {
     if (phase !== "cutoff-select" || loading) return;
 
     setMessages((current) =>
@@ -150,6 +150,7 @@ export default function ChatBot({
       values: {},
       selectedUpToIndex: upToIndex,
       selectedUpToStep: upToStep,
+      selectAllSteps: selectAll,
     });
     setPhase("workflow");
 
