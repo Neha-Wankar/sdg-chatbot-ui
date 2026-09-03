@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { CHAT_SUGGESTIONS } from "../../mock/chatSuggestions/chatSuggestions";
-import { searchScenarios } from "../../services/scenarioMappingService/scenarioMappingService";
+import { normalizeScenarioSearchResponse, searchScenarios } from "../../services/scenarioMappingService/scenarioMappingService";
 import { processStep } from "../../services/workflowService/workflowService";
 import ChatMessage from "../ChatMessage/ChatMessage";
 import RequirementInput from "../RequirementInput/RequirementInput";
@@ -87,12 +87,13 @@ export default function ChatBot({
     try {
       addMessage({ role: "bot", text: "I'll search for the closest approved business scenarios for your requirement." });
       const response = await searchScenarios(query);
+      const scenarioResponse = normalizeScenarioSearchResponse(response, query);
       setPhase("scenario-select");
       addMessage({
         role: "bot",
         text: "I found the following matching business scenarios. Please select one to proceed:",
         type: "scenario-results",
-        data: response,
+        data: scenarioResponse,
       });
     } catch (error) {
       setPhase("idle");
